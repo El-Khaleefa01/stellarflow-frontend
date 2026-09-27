@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { FxRateTicker, FxComparisonTable, FiatOnRampModal, SEP38RateChart } from "@/components/remittance";
+import { CorridorStatusMap, FxRateTicker, FxComparisonTable, FiatOnRampModal, type RemittanceCorridor } from "@/components/remittance";
 import { useOptionalWallet, useOptionalWalletActions } from "@/app/components/providers/WalletProvider";
 import { CreditCard, Wallet } from "lucide-react";
 
@@ -10,6 +11,7 @@ export default function RemittancePage() {
   const walletActions = useOptionalWalletActions();
   const wallet = walletState?.wallet;
   const [isOnRampOpen, setIsOnRampOpen] = useState(false);
+  const [selectedCorridor, setSelectedCorridor] = useState<RemittanceCorridor | null>(null);
 
   const walletAddress = wallet?.publicKey || "";
 
@@ -40,6 +42,17 @@ export default function RemittancePage() {
           <CreditCard size={18} />
           <span>Fund Account / Buy Crypto</span>
         </button>
+      </div>
+
+      {selectedCorridor && (
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-blue-400/30 bg-blue-400/10 p-4">
+          <p className="text-sm text-blue-100">Remittance wizard ready for <strong>{selectedCorridor.destinationCountry}</strong>. Continue to choose funding and payout details.</p>
+          <button type="button" onClick={() => setIsOnRampOpen(true)} className="rounded-lg bg-blue-400 px-3 py-2 text-sm font-semibold text-neutral-950 hover:bg-blue-300">Continue transfer</button>
+        </div>
+      )}
+
+      <div className="mb-6">
+        <CorridorStatusMap onCorridorSelect={setSelectedCorridor} />
       </div>
 
       <div className="grid grid-cols-1 gap-6 xl-grid-cols-3">

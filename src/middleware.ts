@@ -52,6 +52,7 @@ export function middleware(request: NextRequest): NextResponse {
     form-action 'self';
     frame-ancestors ${isEmbedRoute ? '*' : "'none'"};
     upgrade-insecure-requests;
+    report-uri /api/v1/security/csp-report;
   `.replace(/\s{2,}/g, ' ').trim();
 
   const requestHeaders = new Headers(request.headers);

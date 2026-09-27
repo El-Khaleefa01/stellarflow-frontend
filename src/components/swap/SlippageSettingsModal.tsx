@@ -11,7 +11,7 @@ import {
   validateSlippagePercent,
 } from "@/lib/slippage";
 
-export interface SlippageModalProps {
+export interface SlippageSettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
   /**
@@ -25,13 +25,13 @@ export interface SlippageModalProps {
   onConfirm?: (slippagePercent: number, minAmountOut: number | null) => void;
 }
 
-export function SlippageModal({
+export function SlippageSettingsModal({
   isOpen,
   onClose,
   quotedAmountOut,
   outputAssetSymbol = "",
   onConfirm,
-}: SlippageModalProps) {
+}: SlippageSettingsModalProps) {
   const { slippagePercent, setSlippagePercent } = useSlippageTolerance();
   const [customInput, setCustomInput] = useState("");
   const [touched, setTouched] = useState(false);
@@ -195,4 +195,4 @@ export function SlippageModal({
   );
 }
 
-export default SlippageModal;
+export default SlippageSettingsModal;
