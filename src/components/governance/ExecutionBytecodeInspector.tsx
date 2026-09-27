@@ -232,7 +232,7 @@ export function ExecutionBytecodeInspector({
   const decodedResult = useMemo(() => {
     if (!rawXdr.trim()) return { decoded: null, error: null as string | null };
     try {
-      return { decoded: decodeExecutionXdr(rawXdr), error: null as string | null };
+      return { decoded: decodeExecutionXdr(rawXdr, networkPassphrase), error: null as string | null };
     } catch (error) {
       return {
         decoded: null,
