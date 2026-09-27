@@ -12,7 +12,6 @@ import {
 } from "@stellar/stellar-sdk";
 import {
   Check,
-  ChevronDown,
   Clipboard,
   Code2,
   Copy,
@@ -25,8 +24,6 @@ import {
 
 const DEFAULT_RPC_URL = "https://soroban-testnet.stellar.org";
 const DEFAULT_NETWORK_PASSPHRASE = Networks.TESTNET;
-const MAX_TRACE_LINES = 200;
-
 export interface ExecutionBytecodeInspectorProps {
   /** Raw proposal XDR. Supports base64 or 0x-prefixed hex. */
   xdr: string;
@@ -230,18 +227,24 @@ export function ExecutionBytecodeInspector({
   const [simulationOpen, setSimulationOpen] = useState(false);
   const [simulation, setSimulation] = useState<SimulationTrace | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
-  const [decodeError, setDecodeError] = useState<string | null>(null);
 
-  const decoded = useMemo(() => {
-    if (!rawXdr.trim()) return null;
+
+  const decodedResult = useMemo(() => {
+    if (!rawXdr.trim()) return { decoded: null, error: null as string | null };
     try {
-      setDecodeError(null);
-      return decodeExecutionXdr(rawXdr);
+      return { decoded: decodeExecutionXdr(rawXdr), error: null as string | null };
     } catch (error) {
-      setDecodeError(error instanceof Error ? error.message : "XDR decoding failed.");
-      return null;
+      return {
+        decoded: null,
+        error: error instanceof Error ? error.message : "XDR decoding failed.",
+      };
     }
   }, [rawXdr]);
+
+  const decoded = decodedResult.decoded;
+  const decodeError = decodedResult.error;
+
+
 
   const handleCopy = useCallback(async () => {
     await navigator.clipboard.writeText(rawXdr);
