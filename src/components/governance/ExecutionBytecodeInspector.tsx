@@ -144,7 +144,7 @@ function extractInvokeFromTransaction(transaction: unknown, xdrFormat: DecodedEx
   return null;
 }
 
-function decodeExecutionXdr(raw: string): DecodedExecutionCall {
+function decodeExecutionXdr(raw: string, networkPassphrase: string): DecodedExecutionCall {
   const xdrFormat = detectEncoding(raw);
 
   // A complete transaction is the preferred format because it can also be
@@ -152,7 +152,7 @@ function decodeExecutionXdr(raw: string): DecodedExecutionCall {
   try {
     const transaction = TransactionBuilder.fromXDR(
       raw.trim().replace(/^0x/i, ""),
-      DEFAULT_NETWORK_PASSPHRASE,
+      networkPassphrase,
     );
     const decoded = extractInvokeFromTransaction(transaction, xdrFormat);
     if (decoded) return decoded;
@@ -239,7 +239,7 @@ export function ExecutionBytecodeInspector({
         error: error instanceof Error ? error.message : "XDR decoding failed.",
       };
     }
-  }, [rawXdr]);
+  }, [networkPassphrase, rawXdr]);
 
   const decoded = decodedResult.decoded;
   const decodeError = decodedResult.error;
