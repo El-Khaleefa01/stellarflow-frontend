@@ -11,6 +11,7 @@
     "build": "node scripts/generate-pwa-icons.js && next build --webpack && node scripts/check-bundle-size.js",
     "build:analyze": "ANALYZE=true next build",
     "build:strict": "next build --webpack && node scripts/check-bundle-size.js --strict && node scripts/check-css-size.js --strict",
+    "build-storybook": "storybook build",
     "start": "next start",
     "lint": "eslint",
     "test": "node scripts/test-lang-cache.js",

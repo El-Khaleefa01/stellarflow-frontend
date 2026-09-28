@@ -11,6 +11,7 @@ import {
   RefreshCw,
   ArrowRight,
 } from "lucide-react";
+import { BalanceValue } from "@/context/BalancePrivacyContext";
 import {
   useVaultYieldHarvest,
   type HarvestEvent,
@@ -436,7 +437,7 @@ function HarvestRow({ event, expanded, onToggle }: {
           </div>
           <div className="min-w-0 text-left">
             <p className="font-mono text-sm font-bold text-neutral-200">
-              {fmtUsd(event.totalHarvestedUsd)} harvested
+              <BalanceValue>{fmtUsd(event.totalHarvestedUsd)}</BalanceValue> harvested
             </p>
             <p className="text-[11px] text-neutral-500">
               {new Date(event.timestamp).toLocaleString()} · {relativeTime(event.timestamp)}
@@ -477,7 +478,7 @@ function HarvestRow({ event, expanded, onToggle }: {
               >
                 <span className="font-mono text-neutral-400">{p.pair}</span>
                 <span className="font-mono font-semibold text-lime-400">
-                  {fmtUsd(p.harvestedUsd)}
+                  <BalanceValue>{fmtUsd(p.harvestedUsd)}</BalanceValue>
                 </span>
               </div>
             ))}
@@ -552,11 +553,15 @@ function StatCard({
   value,
   sub,
   highlight,
+  balanceValue = false,
+  subBalance = false,
 }: {
   label: string;
   value: string;
   sub?: string;
   highlight?: "green" | "amber";
+  balanceValue?: boolean;
+  subBalance?: boolean;
 }) {
   const valueClass =
     highlight === "green"
@@ -568,8 +573,8 @@ function StatCard({
   return (
     <div className="rounded-xl border border-neutral-800 bg-neutral-900 px-4 py-3">
       <p className="text-[10px] uppercase tracking-wider text-neutral-500">{label}</p>
-      <p className={`mt-1 font-mono text-lg font-bold ${valueClass}`}>{value}</p>
-      {sub && <p className="mt-0.5 text-[11px] text-neutral-600">{sub}</p>}
+      <p className={`mt-1 font-mono text-lg font-bold ${valueClass}`}>{balanceValue ? <BalanceValue>{value}</BalanceValue> : value}</p>
+      {sub && <p className="mt-0.5 text-[11px] text-neutral-600">{subBalance ? <BalanceValue>{sub}</BalanceValue> : sub}</p>}
     </div>
   );
 }
@@ -665,6 +670,7 @@ export function VaultYieldHarvestVisualizer() {
             label="Total Value Locked"
             value={fmtUsd(vault.totalValueLockedUsd)}
             sub={`${vault.totalSharesMinted.toLocaleString()} shares`}
+            balanceValue
           />
           <StatCard
             label="Current APY"
@@ -676,12 +682,15 @@ export function VaultYieldHarvestVisualizer() {
             label="Share Price"
             value={`$${vault.sharePrice.toFixed(4)}`}
             sub="sfvShare USD value"
+            balanceValue
           />
           <StatCard
             label="Pending Harvest"
             value={fmtUsd(vault.pendingHarvestUsd)}
             sub={`${fmtUsd(totalHarvested24h)} last 24h`}
             highlight="amber"
+            balanceValue
+            subBalance
           />
         </div>
 

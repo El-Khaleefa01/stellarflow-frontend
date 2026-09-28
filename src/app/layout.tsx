@@ -25,6 +25,7 @@ import { HapticProvider } from "@/components/providers/HapticProvider";
 import { PushNotificationRoot } from "@/components/notifications";
 import { RpcFailoverMonitor } from "./components/providers/RpcFailoverMonitor";
 import { CommandPalette } from "@/components/command-palette";
+import { GlobalErrorBoundary } from "@/components/GlobalErrorBoundary";
 
 export const metadata: Metadata = {
   title: "StellarFlow Network Dashboard",
@@ -126,6 +127,7 @@ export default async function RootLayout({
       <body
         className="antialiased font-sans flex flex-col min-h-screen"
       >
+        <GlobalErrorBoundary>
         <OfflineBanner />
         <CspReporterInit />
         <SvgSprite />
@@ -151,7 +153,10 @@ export default async function RootLayout({
                             <WalletSessionProvider>
                               <SessionTimeoutManager>
                                 <ScreenLockProvider>
-                                  <InactivityLockGuard>{children}</InactivityLockGuard>
+                                    <InactivityLockGuard>
+                                      {children}
+                                      <MobileBottomNav />
+                                    </InactivityLockGuard>
                                 </ScreenLockProvider>
                               </SessionTimeoutManager>
                             </WalletSessionProvider>
@@ -167,6 +172,7 @@ export default async function RootLayout({
             </HapticProvider>
           </AccessibilityProvider>
         </ThemeProvider>
+        </GlobalErrorBoundary>
       </body>
     </html>
   );
