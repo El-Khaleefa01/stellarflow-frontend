@@ -17,3 +17,9 @@ export type {
   MobileVoteSubmission,
   VoteChoice,
 } from './MobileVoteCard';
+
+export { ExecutionBytecodeInspector } from './ExecutionBytecodeInspector';
+export type {
+  ExecutionBytecodeInspectorProps,
+  DecodedExecutionCall,
+} from './ExecutionBytecodeInspector';
