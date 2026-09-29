@@ -19,6 +19,7 @@ import { WalletNonceResync } from '@/components/wallet/WalletNonceResync';
 import { useZKProofLoader } from '@/components/zk/useZKProofLoader';
 import { useThemeContext, type Theme } from '@/context/ThemeContext';
 import { CustomTokenSettings } from '@/components/tokens/CustomTokenSettings';
+import { NotificationPreferencesModal } from '@/components/notifications/NotificationPreferencesModal';
 
 interface Settings {
   emailReports: boolean;
@@ -172,6 +173,7 @@ export default function SettingsPage() {
               <input type="text" defaultValue="Lead Trainer / Developer" disabled className="w-full bg-[#0d1117] border border-gray-800 rounded-md py-2 px-3 text-sm text-gray-500 cursor-not-allowed" />
             </div>
           </div>
+        </section>
 
         <section className="bg-[#161b22] border border-gray-800 rounded-xl p-6">
           <h2 className="text-lg font-semibold mb-6 flex items-center gap-2">
@@ -310,10 +312,7 @@ export default function SettingsPage() {
               </div>
             </form>
           </div>
-        </main>
-      </div>
-
-      <NotificationPreferencesDrawer 
+      <NotificationPreferencesModal
         isOpen={isDrawerOpen} 
         onClose={() => setIsDrawerOpen(false)} 
       />

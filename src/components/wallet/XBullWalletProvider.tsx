@@ -196,6 +196,13 @@ export function XBullWalletProvider({
    */
   const currentPublicKeyRef = useRef<string | null>(null);
 
+  const stopPolling = useCallback(() => {
+    if (pollIntervalRef.current !== null) {
+      clearInterval(pollIntervalRef.current);
+      pollIntervalRef.current = null;
+    }
+  }, []);
+
   // Whether the extension was found in the browser
   const [extensionInstalled, setExtensionInstalled] = useState<
     boolean | null
@@ -243,13 +250,6 @@ export function XBullWalletProvider({
   }, []);
 
   // ── Polling helpers ────────────────────────────────────────────────────
-
-  const stopPolling = useCallback(() => {
-    if (pollIntervalRef.current !== null) {
-      clearInterval(pollIntervalRef.current);
-      pollIntervalRef.current = null;
-    }
-  }, []);
 
   /**
    * Start an interval that silently calls connect() to check the active
