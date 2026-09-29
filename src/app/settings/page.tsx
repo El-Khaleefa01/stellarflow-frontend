@@ -19,7 +19,8 @@ import { WalletNonceResync } from '@/components/wallet/WalletNonceResync';
 import { useZKProofLoader } from '@/components/zk/useZKProofLoader';
 import { useThemeContext, type Theme } from '@/context/ThemeContext';
 import { CustomTokenSettings } from '@/components/tokens/CustomTokenSettings';
-import { NotificationPreferencesModal } from '@/components/notifications/NotificationPreferencesModal';
+import { NotificationPreferencesPanel } from '@/components/settings/NotificationPreferencesPanel';
+import { KeyboardShortcutsSettings } from '@/components/keyboard-shortcuts/KeyboardShortcutsSettings';
 
 interface Settings {
   emailReports: boolean;
@@ -43,7 +44,6 @@ const TOGGLE_STYLES = {
 export default function SettingsPage() {
   const [showKey, setShowKey] = useState(false);
   const [screenLockModalOpen, setScreenLockModalOpen] = useState(false);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // Custom Horizon endpoint form
   const { horizonUrl, customHorizonUrl } = useNetwork();
@@ -360,10 +360,6 @@ export default function SettingsPage() {
               </div>
             </form>
           </div>
-      <NotificationPreferencesModal
-        isOpen={isDrawerOpen} 
-        onClose={() => setIsDrawerOpen(false)} 
-      />
     </div>
   );
 }
@@ -428,4 +424,3 @@ function MonitorIcon({ className = "" }: { className?: string }) {
     </svg>
   );
 }
-

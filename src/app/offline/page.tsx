@@ -180,12 +180,6 @@ export default function OfflinePage() {
         </div>
       </div>
 
-      <style jsx>{`
-        @keyframes loading {
-          0% { transform: translateX(-100%); }
-          50% { transform: translateX(0%); }
-          100% { transform: translateX(100%); }
-        }
-      `}</style>
     </main>
   );
+}
