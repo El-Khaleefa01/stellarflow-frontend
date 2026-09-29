@@ -21,3 +21,13 @@ export {
   type OrderBookDepthRatioBarProps,
   type DepthRatioResult,
 } from "./OrderBookDepthRatioBar";
+
+export {
+  CumulativeDepthChart,
+  type CumulativeDepthChartProps,
+} from "./CumulativeDepthChart";
+
+export {
+  CumulativeDepthChartView,
+  type CumulativeDepthChartViewProps,
+} from "./CumulativeDepthChartView";
