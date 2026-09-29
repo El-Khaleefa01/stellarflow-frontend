@@ -19,3 +19,13 @@ export {
 export type { PinLength, IdleTimeoutMinutes } from "./ScreenLockModal";
 
 export { AllowanceManager } from "./AllowanceManager";
+
+export { CspViolationDashboard } from "./CspViolationDashboard";
+export { CspReporterInit } from "./CspReporterInit";
+
+export { InactivityLockGuard, useInactivityLock, TIMEOUT_OPTIONS } from "./InactivityLockGuard";
+export type {
+  InactivityTimeoutMinutes,
+  InactivityLockGuardProps,
+  InactivityLockContextType,
+} from "./InactivityLockGuard";

@@ -10,11 +10,13 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import Script from "next/script";
 import SvgSprite from "@/components/icons/SvgSprite";
 import { SecurityBanner } from "@/components/navigation/SecurityBanner";
-import { InstallBanner } from "./components/InstallBanner";
+import { PWAInstallGuideModal } from "@/components/pwa/PWAInstallGuideModal";
 import { OfflineBanner } from "./components/OfflineBanner";
 import { SwUpdateBanner } from "@/components/pwa/SwUpdateBanner";
 import { ScreenLockProvider } from "@/components/security/ScreenLockModal";
 import { SessionTimeoutManager } from "@/components/security/SessionTimeoutManager";
+import { InactivityLockGuard } from "@/components/security/InactivityLockGuard";
+import { CspReporterInit } from "@/components/security/CspReporterInit";
 import { WalletSessionProvider } from "@/context/WalletContext";
 import { GasFeeProvider } from "@/components/gas-fee";
 import { headers } from "next/headers";
@@ -24,6 +26,7 @@ import { PushNotificationRoot } from "@/components/notifications";
 import { RpcFailoverMonitor } from "./components/providers/RpcFailoverMonitor";
 import { NetworkProvider } from "./components/providers/NetworkProvider";
 import { CommandPalette } from "@/components/command-palette";
+import { GlobalErrorBoundary } from "@/components/GlobalErrorBoundary";
 
 export const metadata: Metadata = {
   title: "StellarFlow Network Dashboard",
@@ -44,6 +47,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { subresourceRecoveryScript } from "@/utils/subresourceRecovery";
+
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode; }>) {
@@ -57,6 +62,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: subresourceRecoveryScript }} nonce={nonce} />
         {/*
          * Flash-prevention: blocking inline script runs synchronously before
          * any CSS/JS loads. It reads the stored theme from localStorage and,
@@ -131,7 +137,9 @@ export default async function RootLayout({
       <body
         className="antialiased font-sans flex flex-col min-h-screen"
       >
+        <GlobalErrorBoundary>
         <OfflineBanner />
+        <CspReporterInit />
         <SvgSprite />
         <div className="fixed top-3 right-3 z-40">
           <SecurityBanner />
@@ -155,7 +163,10 @@ export default async function RootLayout({
                             <WalletSessionProvider>
                               <SessionTimeoutManager>
                                 <ScreenLockProvider>
-                                  <NetworkProvider>{children}</NetworkProvider>
+                                    <InactivityLockGuard>
+                                      {children}
+                                      <MobileBottomNav />
+                                    </InactivityLockGuard>
                                 </ScreenLockProvider>
                               </SessionTimeoutManager>
                             </WalletSessionProvider>
@@ -163,7 +174,7 @@ export default async function RootLayout({
                         </PushNotificationRoot>
                       </ToastProvider>
                       <SwUpdateBanner />
-                      <InstallBanner />
+                      <PWAInstallGuideModal />
                       <CommandPalette />
                   </ProgressBarProvider>
                 </QueryProvider>
@@ -171,6 +182,7 @@ export default async function RootLayout({
             </HapticProvider>
           </AccessibilityProvider>
         </ThemeProvider>
+        </GlobalErrorBoundary>
       </body>
     </html>
   );

@@ -18,11 +18,7 @@ import { useDashboardCustomizer } from '@/components/dashboard/useDashboardCusto
 import { WalletNonceResync } from '@/components/wallet/WalletNonceResync';
 import { useZKProofLoader } from '@/components/zk/useZKProofLoader';
 import { useThemeContext, type Theme } from '@/context/ThemeContext';
-import { NotificationPreferencesDrawer } from '@/app/components/NotificationPreferencesDrawer';
-import {
-  useNetwork,
-  useNetworkActions,
-} from '@/app/components/providers/NetworkProvider';
+import { CustomTokenSettings } from '@/components/tokens/CustomTokenSettings';
 
 interface Settings {
   emailReports: boolean;
@@ -262,6 +258,8 @@ export default function SettingsPage() {
 
         {/* Auto-Lock Security Settings */}
         <AutoLockSettings />
+
+        <CustomTokenSettings />
 
         <section className="bg-[#161b22] border border-gray-800 rounded-xl p-6">
           <div className="flex justify-between items-center mb-6">

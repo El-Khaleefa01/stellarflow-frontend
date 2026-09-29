@@ -9,6 +9,7 @@ import {
   type ChartConfiguration,
 } from "chart.js";
 import type { PortfolioAllocationSlice } from "@/types/portfolio";
+import { BalanceValue } from "@/context/BalancePrivacyContext";
 
 Chart.register(ArcElement, DoughnutController, Tooltip);
 
@@ -120,7 +121,7 @@ export default function PortfolioAllocationChart({
             Total
           </span>
           <span className="font-mono text-lg font-bold text-neutral-100">
-            {formatUsd(total)}
+            <BalanceValue>{formatUsd(total)}</BalanceValue>
           </span>
         </div>
       </div>

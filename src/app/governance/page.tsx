@@ -7,6 +7,7 @@ import { ICON_IDS } from '@/components/icons/iconIds';
 import { ProposalList, type ProposalRecord, type ProposalStatus } from '@/components/governance/ProposalList';
 import { DelegateDirectory } from '@/components/governance/DelegateDirectory';
 import ProposalCreationModal, { type ProposalSubmission } from '@/components/governance/ProposalCreationModal';
+import { MobileVoteCard } from '@/components/governance/MobileVoteCard';
 import type { Delegate } from '@/types/delegation';
 
 // --- Mock Data ---
@@ -275,11 +276,53 @@ export default function GovernancePage() {
           </div>
 
           {/* Proposal List */}
-          <ProposalList proposals={proposals} filter={activeTab} />
+          <ProposalList
+            proposals={proposals}
+            filter={activeTab}
+            onVote={(target) => setVoteTarget(target)}
+          />
         </>
       ) : (
         /* Delegate Directory */
         <DelegateDirectory delegates={MOCK_DELEGATES} />
+      )}
+
+      {/* Mobile-First Voting Card Modal Overlay */}
+      {voteTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
+          <div className="w-full max-w-md relative">
+            <button
+              onClick={() => setVoteTarget(null)}
+              className="absolute -top-9 right-1 text-gray-400 hover:text-white text-xs flex items-center gap-1 bg-gray-900/90 px-3 py-1 rounded-full border border-gray-700 z-10 transition-colors"
+              aria-label="Close voting modal"
+            >
+              <span>✕ Close</span>
+            </button>
+            <MobileVoteCard
+              proposal={voteTarget}
+              votingPower={walletBalance > 0 ? walletBalance : 12450}
+              onClose={() => setVoteTarget(null)}
+              onVoteSubmitted={(sub) => {
+                setProposals((current) =>
+                  current.map((p) => {
+                    if (p.id === sub.proposalId) {
+                      return {
+                        ...p,
+                        votesFor:
+                          sub.voteChoice === 'For' ? p.votesFor + sub.votingPower : p.votesFor,
+                        votesAgainst:
+                          sub.voteChoice === 'Against'
+                            ? p.votesAgainst + sub.votingPower
+                            : p.votesAgainst,
+                      };
+                    }
+                    return p;
+                  })
+                );
+              }}
+            />
+          </div>
+        </div>
       )}
 
       <ProposalCreationModal

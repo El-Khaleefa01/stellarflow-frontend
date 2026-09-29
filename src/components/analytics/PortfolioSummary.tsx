@@ -17,6 +17,7 @@ import WalletBalanceBreakdown from "./WalletBalanceBreakdown";
 import AssetBreakdownStackedBar from "./AssetBreakdownStackedBar";
 import { SkeletonCard } from "@/components/skeletons/SkeletonCard";
 import { SkeletonChart } from "@/components/skeletons/SkeletonChart";
+import { BalanceValue } from "@/context/BalancePrivacyContext";
 
 function formatUsd(value: number): string {
   return value.toLocaleString(undefined, {
@@ -76,7 +77,7 @@ export default function PortfolioSummary() {
             </span>
             <div className="mt-1 flex items-baseline gap-3">
               <span className="font-mono text-4xl font-bold text-neutral-100">
-                {formatUsd(totalNetWorthUsd)}
+                <BalanceValue>{formatUsd(totalNetWorthUsd)}</BalanceValue>
               </span>
               <span
                 className={`font-mono text-sm font-semibold ${
@@ -179,7 +180,7 @@ function BalanceCard({
         {label}
       </div>
       <span className="mt-1 block font-mono text-xl font-semibold text-neutral-100">
-        {formatUsd(valueUsd)}
+        <BalanceValue>{formatUsd(valueUsd)}</BalanceValue>
       </span>
     </div>
   );

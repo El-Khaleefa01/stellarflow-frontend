@@ -13,6 +13,7 @@ import {
   type ChartConfiguration,
 } from "chart.js";
 import type { PortfolioSummaryData, PortfolioTimeframe } from "@/types/portfolio";
+import { BalanceValue } from "@/context/BalancePrivacyContext";
 
 Chart.register(
   LineController,
@@ -136,7 +137,7 @@ export default function PortfolioHistoryChart({
           className={`font-mono text-sm ${isPositive ? "text-emerald-400" : "text-red-400"}`}
         >
           {isPositive ? "+" : ""}
-          {formatUsd(changeUsd)} ({isPositive ? "+" : ""}
+          <BalanceValue>{formatUsd(changeUsd)}</BalanceValue> ({isPositive ? "+" : ""}
           {changePercent.toFixed(2)}%) · {timeframe}
         </span>
 

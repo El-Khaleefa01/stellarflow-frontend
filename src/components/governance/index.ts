@@ -9,3 +9,11 @@ export { ProposalList } from './ProposalList';
 export { ProposalCreationModal } from './ProposalCreationModal';
 export { DelegateDirectory } from './DelegateDirectory';
 export { MultisigSignModal } from './MultisigSignModal';
+
+export { MobileVoteCard } from './MobileVoteCard';
+export type {
+  MobileVoteCardProps,
+  MobileVoteCardProposal,
+  MobileVoteSubmission,
+  VoteChoice,
+} from './MobileVoteCard';
