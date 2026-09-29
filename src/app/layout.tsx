@@ -11,7 +11,7 @@ import Script from "next/script";
 import SvgSprite from "@/components/icons/SvgSprite";
 import { SecurityBanner } from "@/components/navigation/SecurityBanner";
 import { PWAInstallGuideModal } from "@/components/pwa/PWAInstallGuideModal";
-import { OfflineBanner } from "./components/OfflineBanner";
+import { OfflineBanner } from "@/components/pwa/OfflineBanner";
 import { SwUpdateBanner } from "@/components/pwa/SwUpdateBanner";
 import { ScreenLockProvider } from "@/components/security/ScreenLockModal";
 import { SessionTimeoutManager } from "@/components/security/SessionTimeoutManager";
