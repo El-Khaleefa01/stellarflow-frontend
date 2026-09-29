@@ -10,6 +10,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import Script from "next/script";
 import SvgSprite from "@/components/icons/SvgSprite";
 import { SecurityBanner } from "@/components/navigation/SecurityBanner";
+import MobileBottomNav from "@/components/navigation/MobileBottomNav";
 import { PWAInstallGuideModal } from "@/components/pwa/PWAInstallGuideModal";
 import { OfflineBanner } from "./components/OfflineBanner";
 import { SwUpdateBanner } from "@/components/pwa/SwUpdateBanner";
@@ -23,6 +24,10 @@ import { headers } from "next/headers";
 import { AccessibilityProvider } from "@/context/AccessibilityContext";
 import { HapticProvider } from "@/components/providers/HapticProvider";
 import { PushNotificationRoot } from "@/components/notifications";
+import {
+  MultisigNotificationBadge,
+  MultisigNotificationProvider,
+} from "@/components/multisig";
 import { RpcFailoverMonitor } from "./components/providers/RpcFailoverMonitor";
 import { CommandPalette } from "@/components/command-palette";
 import { GlobalErrorBoundary } from "@/components/GlobalErrorBoundary";
@@ -131,9 +136,6 @@ export default async function RootLayout({
         <OfflineBanner />
         <CspReporterInit />
         <SvgSprite />
-        <div className="fixed top-3 right-3 z-40">
-          <SecurityBanner />
-        </div>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -151,14 +153,25 @@ export default async function RootLayout({
                         <PushNotificationRoot>
                           <ErrorBoundary tags={{ section: "root" }}>
                             <WalletSessionProvider>
-                              <SessionTimeoutManager>
-                                <ScreenLockProvider>
-                                    <InactivityLockGuard>
-                                      {children}
-                                      <MobileBottomNav />
-                                    </InactivityLockGuard>
-                                </ScreenLockProvider>
-                              </SessionTimeoutManager>
+                              {/*
+                                Co-signer alerts (#962) live here so the
+                                top-bar badge can read the connected wallet
+                                and the pending-signature queue from anywhere.
+                              */}
+                              <MultisigNotificationProvider>
+                                <SessionTimeoutManager>
+                                  <ScreenLockProvider>
+                                      <InactivityLockGuard>
+                                        <div className="fixed top-3 right-3 z-40 flex items-center gap-2">
+                                          <MultisigNotificationBadge />
+                                          <SecurityBanner />
+                                        </div>
+                                        {children}
+                                        <MobileBottomNav />
+                                      </InactivityLockGuard>
+                                  </ScreenLockProvider>
+                                </SessionTimeoutManager>
+                              </MultisigNotificationProvider>
                             </WalletSessionProvider>
                           </ErrorBoundary>
                         </PushNotificationRoot>
