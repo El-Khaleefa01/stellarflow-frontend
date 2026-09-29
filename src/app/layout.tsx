@@ -26,6 +26,7 @@ import { PushNotificationRoot } from "@/components/notifications";
 import { RpcFailoverMonitor } from "./components/providers/RpcFailoverMonitor";
 import { NetworkProvider } from "./components/providers/NetworkProvider";
 import { CommandPalette } from "@/components/command-palette";
+import { KeyboardShortcutsRoot } from "@/components/keyboard-shortcuts/KeyboardShortcutsRoot";
 import { GlobalErrorBoundary } from "@/components/GlobalErrorBoundary";
 
 export const metadata: Metadata = {
@@ -176,6 +177,7 @@ export default async function RootLayout({
                       <SwUpdateBanner />
                       <PWAInstallGuideModal />
                       <CommandPalette />
+                      <KeyboardShortcutsRoot />
                   </ProgressBarProvider>
                 </QueryProvider>
               </UserProvider>
@@ -187,3 +189,4 @@ export default async function RootLayout({
     </html>
   );
 }
+

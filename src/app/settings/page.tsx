@@ -255,6 +255,8 @@ export default function SettingsPage() {
 
         <CustomTokenSettings />
 
+        <KeyboardShortcutsSettings />
+
         <section className="bg-[#161b22] border border-gray-800 rounded-xl p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-lg font-semibold flex items-center gap-2">
@@ -411,3 +413,4 @@ function MonitorIcon({ className = "" }: { className?: string }) {
     </svg>
   );
 }
+
