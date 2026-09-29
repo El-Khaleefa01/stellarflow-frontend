@@ -8,9 +8,9 @@
   "sideEffects": false,
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/generate-pwa-icons.js && next build --webpack && node scripts/check-bundle-size.js",
+    "build": "node scripts/check-sri.js && node scripts/generate-pwa-icons.js && next build --webpack && node scripts/check-bundle-size.js",
     "build:analyze": "ANALYZE=true next build",
-    "build:strict": "next build --webpack && node scripts/check-bundle-size.js --strict && node scripts/check-css-size.js --strict",
+    "build:strict": "node scripts/check-sri.js && next build --webpack && node scripts/check-bundle-size.js --strict && node scripts/check-css-size.js --strict",
     "build-storybook": "storybook build",
     "start": "next start",
     "lint": "eslint",
