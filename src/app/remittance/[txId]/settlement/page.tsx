@@ -11,6 +11,10 @@ interface SettlementRouteProps {
   params: Promise<{ txId: string }>;
 }
 
+export function generateStaticParams() {
+  return [{ txId: "abc123ef" }];
+}
+
 /**
  * Direct transaction-reference link for the SEP-31 settlement receipt:
  *
