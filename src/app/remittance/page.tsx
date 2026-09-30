@@ -3,7 +3,8 @@
 import React, { useState } from "react";
 import { CorridorStatusMap, FxRateTicker, FxComparisonTable, FiatOnRampModal, SEP24InteractiveModal, type RemittanceCorridor } from "@/components/remittance";
 import { useOptionalWallet, useOptionalWalletActions } from "@/app/components/providers/WalletProvider";
-import { ArrowDownToLine, ArrowUpFromLine, CreditCard } from "lucide-react";
+import { ArrowDownToLine, ArrowUpFromLine, CreditCard, LockKeyhole, ShieldAlert } from "lucide-react";
+import { RedeemNoteForm } from "@/components/remittance/RedeemNoteForm";
 import type { SEP24Operation } from "@/lib/sep24Interactive";
 
 export default function RemittancePage() {
@@ -160,4 +161,3 @@ export default function RemittancePage() {
     </div>
   );
 }
-

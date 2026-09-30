@@ -15,7 +15,6 @@ import {
   ExternalLink,
   Info,
   Smartphone,
-  Chrome,
   Globe
 } from "lucide-react";
 import { usePushNotifications, useNotificationTriggers } from "@/hooks/usePushNotifications";
@@ -151,7 +150,7 @@ export function PushNotificationManager({
 
   const getBrowserIcon = () => {
     const userAgent = navigator.userAgent.toLowerCase();
-    if (userAgent.includes('chrome')) return Chrome;
+    if (userAgent.includes('chrome')) return Globe;
     if (userAgent.includes('safari')) return Smartphone;
     return Globe;
   };

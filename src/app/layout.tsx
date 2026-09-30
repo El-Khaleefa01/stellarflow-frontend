@@ -28,6 +28,7 @@ import { NetworkProvider } from "./components/providers/NetworkProvider";
 import { CommandPalette } from "@/components/command-palette";
 import { KeyboardShortcutsRoot } from "@/components/keyboard-shortcuts/KeyboardShortcutsRoot";
 import { GlobalErrorBoundary } from "@/components/GlobalErrorBoundary";
+import { MobileBottomNav } from "@/components/navigation";
 
 export const metadata: Metadata = {
   title: "StellarFlow Network Dashboard",

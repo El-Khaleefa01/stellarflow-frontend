@@ -13,7 +13,7 @@ const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();
 
 app.prepare().then(() => {
-  const server = createServer((res, res) => {
+  const server = createServer((req, res) => {
     // Apply compression middleware
     // shrink-ray-current will automatically detect Accept-Encoding and apply Brotli/Gzip
     compression({
