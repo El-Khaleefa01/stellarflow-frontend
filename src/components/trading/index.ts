@@ -16,24 +16,13 @@ export {
 } from "./CandlestickChart";
 
 export {
-  TickAggregationController,
-  type TickAggregationControllerProps,
-} from "./TickAggregationController";
+  OrderBookDepthRatioBar,
+  calculateDepthRatio,
+  type OrderBookDepthRatioBarProps,
+  type DepthRatioResult,
+} from "./OrderBookDepthRatioBar";
 
 export {
-  DEFAULT_TICK_STEPS,
-  MARKET_TICK_STEPS,
-  aggregateLevels,
-  bucketStart,
-  computeDepthRatios,
-  decimalsForTick,
-  getDefaultTickSize,
-  getTickStepOptions,
-  normalizeMarket,
-  normalizeTickSize,
-  parseTickSize,
-  tickPreferenceKey,
-  type AggregatedLevel,
-  type OrderBookSide,
-  type TickSourceLevel,
-} from "./tickAggregation";
+  HighPriceImpactModal,
+  type HighPriceImpactModalProps,
+} from "./HighPriceImpactModal";

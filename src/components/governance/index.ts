@@ -6,7 +6,7 @@ export type { VotingPowerCalculatorProps } from './VotingPowerCalculator';
 
 export { VoteModal } from './VoteModal';
 export { ProposalList } from './ProposalList';
-export { ProposalCreationModal } from './ProposalCreationModal';
+export { default as ProposalCreationModal } from './ProposalCreationModal';
 export { DelegateDirectory } from './DelegateDirectory';
 export { MultisigSignModal } from './MultisigSignModal';
 
