@@ -11,7 +11,7 @@ import Script from "next/script";
 import SvgSprite from "@/components/icons/SvgSprite";
 import { SecurityBanner } from "@/components/navigation/SecurityBanner";
 import { PWAInstallGuideModal } from "@/components/pwa/PWAInstallGuideModal";
-import { OfflineBanner } from "./components/OfflineBanner";
+import { OfflineBanner } from "@/components/pwa/OfflineBanner";
 import { SwUpdateBanner } from "@/components/pwa/SwUpdateBanner";
 import { ScreenLockProvider } from "@/components/security/ScreenLockModal";
 import { SessionTimeoutManager } from "@/components/security/SessionTimeoutManager";
@@ -26,6 +26,7 @@ import { PushNotificationRoot } from "@/components/notifications";
 import { RpcFailoverMonitor } from "./components/providers/RpcFailoverMonitor";
 import { CommandPalette } from "@/components/command-palette";
 import { GlobalErrorBoundary } from "@/components/GlobalErrorBoundary";
+import { MobileBottomNav } from "@/components/navigation";
 
 export const metadata: Metadata = {
   title: "StellarFlow Network Dashboard",
@@ -46,13 +47,19 @@ export const metadata: Metadata = {
   },
 };
 
+import { subresourceRecoveryScript } from "@/utils/subresourceRecovery";
+
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode; }>) {
-  const nonce = (await headers()).get("x-nonce") ?? undefined;
+  const nonce =
+    process.env.NEXT_OUTPUT_MODE === "export"
+      ? undefined
+      : ((await headers()).get("x-nonce") ?? undefined);
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: subresourceRecoveryScript }} nonce={nonce} />
         {/*
          * Flash-prevention: blocking inline script runs synchronously before
          * any CSS/JS loads. It reads the stored theme from localStorage and,

@@ -25,21 +25,7 @@
   --muted: rgba(0, 0, 0, 0.45);
   --control: #ffffff;
   --control-hover: #f5f5f5;
-
-  /* Accessibility tokens — non-boosted (light) defaults. */
-  --contrast-focus: #1d4ed8;
-  --accent: #2563eb;
-  --accent-foreground: #ffffff;
-  --status-success: #15803d;
-  --status-warning: #b45309;
-  --status-danger: #b91c1c;
-  --status-info: #1d4ed8;
-  --chart-1: #60a5fa;
-  --chart-2: #34d399;
-  --chart-3: #f59e0b;
-  --chart-4: #f472b6;
-  --chart-5: #a78bfa;
-  --chart-6: #22d3ee;
+  --focus-ring-color: #3b82f6;
 }
 
 /* Dark theme — applied by next-themes adding `.dark` to <html> */
@@ -85,32 +71,11 @@
   --surface: #000000;
   --surface-raised: #1a1a1a;
   --border: #ffffff;
-  --muted: #e6e6e6;
-  --control: #000000;
-  --control-hover: #1a1a1a;
-
-  /* Focus + accent — 19.6:1 on black, so visibility never depends on hue. */
-  --contrast-focus: #ffff00;
-  --accent: #ffff00;
-  --accent-foreground: #000000;
-
-  /* Status hues — each >= 8:1 against --background. */
-  --status-success: #00ff88;
-  --status-warning: #ffcc00;
-  --status-danger: #ff8080;
-  --status-info: #66d9ff;
-
-  /* Chart series — each >= 8:1 against the black plotting surface. */
-  --chart-1: #66d9ff;
-  --chart-2: #00ff88;
-  --chart-3: #ffff00;
-  --chart-4: #ff8080;
-  --chart-5: #c792ea;
-  --chart-6: #ffb366;
+  --muted: #ffffff;
+  --focus-ring-color: #ffff00;
 }
 
-.high-contrast body,
-[data-contrast="high"] body {
+.high-contrast body {
   background: #000000;
   color: #ffffff;
 }
@@ -121,68 +86,34 @@
   border-color: var(--border);
 }
 
-/* Keep keyboard focus visible even when a component supplies its own styles. */
-:where(a, button, input, select, textarea, summary, [tabindex]:not([tabindex="-1"])):focus-visible {
-  outline: 3px solid #ffff00;
-  outline-offset: 3px;
-}
-
-/* Enforce a 3px focus indicator with a contrasting inner ring so it stays
-   visible on both the black page and bright accent-filled controls. */
-.high-contrast :where(a, button, input, select, textarea, summary, [tabindex]:not([tabindex="-1"])):focus-visible,
-[data-contrast="high"] :where(a, button, input, select, textarea, summary, [tabindex]:not([tabindex="-1"])):focus-visible {
-  outline: 3px solid var(--contrast-focus);
-  outline-offset: 2px;
-  box-shadow: 0 0 0 1px #000000;
-}
-
-/* Tailwind's muted grey utilities only reach ~4–5:1 on black; lift them back
-   above the AAA threshold. */
-.high-contrast :where(.text-gray-400, .text-gray-500, .text-gray-600, .text-zinc-400, .text-zinc-500, .text-slate-400, .text-slate-500, .text-neutral-400, .text-neutral-500),
-[data-contrast="high"] :where(.text-gray-400, .text-gray-500, .text-gray-600, .text-zinc-400, .text-zinc-500, .text-slate-400, .text-slate-500, .text-neutral-400, .text-neutral-500) {
-  color: var(--muted);
-}
-
-/* Tailwind's `/opacity` colour modifiers desaturate below AAA; restore them. */
-.high-contrast [class*="text-foreground/"],
-[data-contrast="high"] [class*="text-foreground/"] {
-  color: var(--muted);
-}
-
-/* ─── Reusable high-contrast status badges ─────────────────────────────────── */
-.high-contrast .hc-status-badge,
-[data-contrast="high"] .hc-status-badge {
-  border: 2px solid currentColor;
-  background-color: var(--background);
-  color: var(--foreground);
-  font-weight: 700;
-}
-
-.high-contrast .hc-status-badge--success,
-[data-contrast="high"] .hc-status-badge--success {
-  color: var(--status-success);
-}
-
-.high-contrast .hc-status-badge--warning,
-[data-contrast="high"] .hc-status-badge--warning {
-  color: var(--status-warning);
-}
-
-.high-contrast .hc-status-badge--danger,
-[data-contrast="high"] .hc-status-badge--danger {
-  color: var(--status-danger);
-}
-
-.high-contrast .hc-status-badge--info,
-[data-contrast="high"] .hc-status-badge--info {
-  color: var(--status-info);
-}
-
-/* Chart wrappers opt in to a solid, bordered plotting surface. */
-.high-contrast .hc-chart-surface,
-[data-contrast="high"] .hc-chart-surface {
-  background-color: var(--background);
-  border: 2px solid var(--border);
+/* A shared ring for keyboard focus. `:focus-visible` keeps pointer clicks quiet;
+   important is needed because many legacy controls explicitly use focus:outline-none. */
+:where(
+    a[href],
+    area[href],
+    button,
+    input:not([type="hidden"]),
+    select,
+    textarea,
+    summary,
+    [role="button"],
+    [role="link"],
+    [role="checkbox"],
+    [role="radio"],
+    [role="switch"],
+    [role="combobox"],
+    [role="option"],
+    [role="menuitem"],
+    [role="tab"],
+    [role="treeitem"],
+    [role="gridcell"],
+    [role="dialog"],
+    [role="alertdialog"],
+    [contenteditable="true"],
+    [tabindex]:not([tabindex="-1"])
+  ):focus-visible {
+  outline: 2px solid var(--focus-ring-color) !important;
+  outline-offset: 2px !important;
 }
 
 @theme inline {
@@ -288,6 +219,15 @@ body {
   from { opacity: 0; transform: translateY(0) rotate(0deg); }
   20% { opacity: 1; }
   to { opacity: 0; transform: translateY(7rem) rotate(260deg); }
+}
+
+/* Brief green pulse on the AMM fee tracker when a fill spikes well above the
+   recent trade-size average. One-shot: the component re-keys the overlay so
+   consecutive spikes restart the run. */
+@keyframes fee-spike-glow {
+  0% { opacity: 0; }
+  25% { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
