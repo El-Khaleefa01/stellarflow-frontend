@@ -249,17 +249,6 @@ export function LimitOrderForm({
     },
     [decimals],
   );
-  // ── Form state ────────────────────────────────────────────────────────────
-  const [rawPrice, setRawPrice] = useState("");
-  const [rawAmount, setRawAmount] = useState("");
-  const [touchedPrice, setTouchedPrice] = useState(false);
-  const [touchedAmount, setTouchedAmount] = useState(false);
-  const [expiryHours, setExpiryHours] = useState(24);
-
-  // ── Submission state ──────────────────────────────────────────────────────
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
 
   // ── Orders state ──────────────────────────────────────────────────────────
   const [activeOrders, setActiveOrders] = useState<ActiveLimitOrder[]>([]);

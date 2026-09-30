@@ -13,8 +13,8 @@ if (fs.existsSync(privateApiDirectory)) {
   throw new Error(`Cannot stage static export while ${privateApiDirectory} exists`);
 }
 
-// Static S3 exports cannot include Next.js route handlers, so move them out of
-// the route tree while generating the export and put them back in a finally block.
+// A static S3 export cannot host Next.js route handlers. Keep those endpoints
+// out of the exported route tree; API handlers need a separate server runtime.
 fs.renameSync(apiDirectory, privateApiDirectory);
 
 try {

@@ -11,6 +11,8 @@ interface SettlementRouteProps {
   params: Promise<{ txId: string }>;
 }
 
+// Static hosting cannot enumerate arbitrary references; include the demo
+// receipt to keep the route's shell available in the static export.
 export function generateStaticParams() {
   return [{ txId: "abc123ef" }];
 }

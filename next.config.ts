@@ -9,6 +9,8 @@ const withBundleAnalyzerConfig = withBundleAnalyzer({
 });
 
 const isStandaloneBuild = process.env.NEXT_OUTPUT_MODE === "standalone";
+
+/** `NEXT_OUTPUT_MODE=export` renders a fully static site (out/) for S3/CloudFront. */
 const isStaticExport = process.env.NEXT_OUTPUT_MODE === "export";
 
 /** Vercel populates this automatically; fall back to the local git HEAD for other hosts/dev. */
@@ -61,6 +63,7 @@ const nextConfig: NextConfig = {
     NEXT_PUBLIC_COMMIT_SHA: resolveCommitSha(),
   },
   output: isStaticExport ? "export" : isStandaloneBuild ? "standalone" : undefined,
+  // Directory URLs (`/dashboard/`) map to `dashboard/index.html` on S3/CloudFront.
   trailingSlash: isStaticExport,
   reactCompiler: false,
   compress: true,
@@ -92,11 +95,13 @@ const nextConfig: NextConfig = {
   },
   productionBrowserSourceMaps: false,
   typescript: {
-    // Keep production builds unblocked while CI reports the existing type backlog.
+    // CI's type-check step is explicitly report-only while the repository's
+    // existing type backlog is addressed. Keep builds consistent with that.
     ignoreBuildErrors: true,
   },
   turbopack: {},
   images: {
+    // Static hosts cannot run the image optimizer.
     unoptimized: isStaticExport,
     formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
