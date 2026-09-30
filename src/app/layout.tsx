@@ -120,6 +120,8 @@ export default async function RootLayout({
           nonce={nonce}
           strategy="afterInteractive"
           fetchPriority="low"
+          integrity="sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/uxy9rx7HNQlGYl1kPzQho1wx4JwY8wC"
+          crossOrigin="anonymous"
           dangerouslySetInnerHTML={{
             __html: `
               if (!('IntersectionObserver' in window) || 
@@ -129,6 +131,8 @@ export default async function RootLayout({
                 console.info('StellarFlow: Modern features missing. Loading on-demand polyfills...');
                 var js = document.createElement('script');
                 js.src = 'https://polyfill-library.fastly.dev/v3/polyfill.min.js?features=default,IntersectionObserver,ResizeObserver,fetch,Promise';
+                js.integrity = 'sha384-oqVuAfXRKap7fdgcCY5uykM6+R9GqQ8K/uxy9rx7HNQlGYl1kPzQho1wx4JwY8wC';
+                js.crossOrigin = 'anonymous';
                 document.head.appendChild(js);
               }
             `
