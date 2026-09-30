@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "node scripts/generate-pwa-icons.js && next build --webpack && node scripts/check-bundle-size.js",
-    "build:export": "next build --webpack",
+    "build:export": "node scripts/build-static-export.js",
     "build:analyze": "ANALYZE=true next build",
     "build:strict": "next build --webpack && node scripts/check-bundle-size.js --strict && node scripts/check-css-size.js --strict",
     "build-storybook": "storybook build",

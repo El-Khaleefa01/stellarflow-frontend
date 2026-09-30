@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import dynamic from "next/dynamic";
 import {
   Bell,
   BarChart3,
@@ -11,11 +12,11 @@ import {
   ArrowRight,
   Info,
 } from "lucide-react";
-import { OfflineBanner } from "@/components/pwa/OfflineBanner";
-import { PushNotificationManager } from "@/components/notifications/PushNotificationManager";
-import { HarvestHistoryModal } from "@/components/yield/HarvestHistoryModal";
-import { OrderBookView } from "@/components/trading/OrderBookView";
-import { NotificationPreferencesPanel } from "@/components/settings/NotificationPreferencesPanel";
+const OfflineBanner = dynamic(() => import("@/components/pwa/OfflineBanner").then((module) => module.OfflineBanner), { ssr: false });
+const PushNotificationManager = dynamic(() => import("@/components/notifications/PushNotificationManager").then((module) => module.PushNotificationManager), { ssr: false });
+const HarvestHistoryModal = dynamic(() => import("@/components/yield/HarvestHistoryModal").then((module) => module.HarvestHistoryModal), { ssr: false });
+const OrderBookView = dynamic(() => import("@/components/trading/OrderBookView").then((module) => module.OrderBookView), { ssr: false });
+const NotificationPreferencesPanel = dynamic(() => import("@/components/settings/NotificationPreferencesPanel").then((module) => module.NotificationPreferencesPanel), { ssr: false });
 
 /**
  * Demo page showcasing all new PWA and notification components

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Icon from '@/components/icons/Icon';
 import { ICON_IDS } from '@/components/icons/iconIds';
 import { useDebounce } from '../hooks/useDebounce';
@@ -21,6 +21,7 @@ import { useThemeContext, type Theme } from '@/context/ThemeContext';
 import { CustomTokenSettings } from '@/components/tokens/CustomTokenSettings';
 import { NotificationPreferencesPanel } from '@/components/settings/NotificationPreferencesPanel';
 import { KeyboardShortcutsSettings } from '@/components/keyboard-shortcuts/KeyboardShortcutsSettings';
+import { NetworkProvider, useNetwork, useNetworkActions } from '@/app/components/providers/NetworkProvider';
 
 interface Settings {
   emailReports: boolean;
@@ -41,14 +42,13 @@ const TOGGLE_STYLES = {
   },
 };
 
-export default function SettingsPage() {
+function SettingsContent() {
   const [showKey, setShowKey] = useState(false);
   const [screenLockModalOpen, setScreenLockModalOpen] = useState(false);
 
   // Custom Horizon endpoint form
   const { horizonUrl, customHorizonUrl } = useNetwork();
-  const { setCustomHorizonEndpoint, resetToDefaultEndpoint } =
-    useNetworkActions();
+  const { setCustomHorizonEndpoint, resetToDefaultEndpoint } = useNetworkActions();
   const [inputUrl, setInputUrl] = useState('');
   const [isValidating, setIsValidating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -362,6 +362,10 @@ export default function SettingsPage() {
           </div>
     </div>
   );
+}
+
+export default function SettingsPage() {
+  return <NetworkProvider><SettingsContent /></NetworkProvider>;
 }
 
 function ToggleItem({ icon, title, description, enabled, onToggle, onConfigure }: { icon: React.ReactNode, title: string, description: string, enabled: boolean, onToggle: () => void, onConfigure?: () => void }) {
