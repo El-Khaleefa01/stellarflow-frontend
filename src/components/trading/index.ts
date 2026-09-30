@@ -21,3 +21,8 @@ export {
   type OrderBookDepthRatioBarProps,
   type DepthRatioResult,
 } from "./OrderBookDepthRatioBar";
+
+export {
+  HighPriceImpactModal,
+  type HighPriceImpactModalProps,
+} from "./HighPriceImpactModal";
