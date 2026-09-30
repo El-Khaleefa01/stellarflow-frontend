@@ -249,6 +249,17 @@ export function LimitOrderForm({
     },
     [decimals],
   );
+  // ── Form state ────────────────────────────────────────────────────────────
+  const [rawPrice, setRawPrice] = useState("");
+  const [rawAmount, setRawAmount] = useState("");
+  const [touchedPrice, setTouchedPrice] = useState(false);
+  const [touchedAmount, setTouchedAmount] = useState(false);
+  const [expiryHours, setExpiryHours] = useState(24);
+
+  // ── Submission state ──────────────────────────────────────────────────────
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
 
   // ── Orders state ──────────────────────────────────────────────────────────
   const [activeOrders, setActiveOrders] = useState<ActiveLimitOrder[]>([]);
@@ -285,6 +296,24 @@ export function LimitOrderForm({
     !isSubmitting &&
     wallet?.connected === true;
 
+
+  const handleBookSelection = useCallback(
+    (level: OrderBookLevel, side: "bid" | "ask") => {
+      setRawPrice(formatPrice(level.price, decimals));
+      setRawAmount(level.amount.toFixed(6));
+      setSubmitError(null);
+      setSubmitSuccess(null);
+      setTouchedPrice(true);
+      setTouchedAmount(true);
+
+      if (side === "bid") {
+        setSubmitSuccess(`Bid level ${level.price.toFixed(decimals)} prefilled.`);
+      } else {
+        setSubmitSuccess(`Ask level ${level.price.toFixed(decimals)} prefilled.`);
+      }
+    },
+    [decimals],
+  );
 
   // ── Load active orders ────────────────────────────────────────────────────
   const loadOrders = useCallback(async () => {
