@@ -2,12 +2,14 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import { Horizon, Asset, Operation, TransactionBuilder } from "@stellar/stellar-sdk";
-import { useNetwork } from "@/app/components/providers/NetworkProvider";
+import { NetworkProvider, useNetwork } from "@/app/components/providers/NetworkProvider";
 import { useWalletState } from "@/app/hooks/useWalletState";
 import { useSlippageTolerance } from "@/app/hooks/useSlippageTolerance";
 import WalletConnectButton from "@/app/components/WalletConnectButton";
 import OptimizedDialog from "@/app/components/OptimizedDialog";
 import { MotionButton, MotionCard, SuccessConfetti } from "@/components/ui/MotionPrimitives";
+import CandlestickChart from "@/components/trading/CandlestickChart";
+import { ASSET_SYMBOLS } from "@/config/assetSymbols";
 
 interface PathRecord {
   source_amount: string;
@@ -20,7 +22,7 @@ interface ProcessedPathHop {
   amount: string;
 }
 
-export default function SwapPage() {
+function SwapContent() {
   const { horizonUrl, network } = useNetwork();
   const { wallet } = useWalletState();
   const { slippagePercent, setSlippagePercent } = useSlippageTolerance();
@@ -189,6 +191,15 @@ export default function SwapPage() {
       <div className="max-w-2xl mx-auto">
         <h1 className="text-3xl font-bold mb-2">Swap & Send</h1>
         <p className="text-gray-400 mb-8">Send Token A, receiver gets Token B automatically via Stellar Path Payments</p>
+
+        <div className="mb-8">
+          <CandlestickChart
+            pairId={ASSET_SYMBOLS.USD_XLM}
+            baseSymbol="USD"
+            quoteSymbol="XLM"
+            height={320}
+          />
+        </div>
         
         <MotionCard className="relative bg-gray-900 rounded-2xl p-6 shadow-xl space-y-6">
           <SuccessConfetti show={transactionPrepared} />
@@ -362,4 +373,8 @@ export default function SwapPage() {
       </div>
     </div>
   );
+}
+
+export default function SwapPage() {
+  return <NetworkProvider><SwapContent /></NetworkProvider>;
 }

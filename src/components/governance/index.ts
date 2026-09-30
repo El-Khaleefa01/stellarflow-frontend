@@ -6,7 +6,7 @@ export type { VotingPowerCalculatorProps } from './VotingPowerCalculator';
 
 export { VoteModal } from './VoteModal';
 export { ProposalList } from './ProposalList';
-export { ProposalCreationModal } from './ProposalCreationModal';
+export { default as ProposalCreationModal } from './ProposalCreationModal';
 export { DelegateDirectory } from './DelegateDirectory';
 export { MultisigSignModal } from './MultisigSignModal';
 
@@ -18,8 +18,5 @@ export type {
   VoteChoice,
 } from './MobileVoteCard';
 
-export { ExecutionBytecodeInspector } from './ExecutionBytecodeInspector';
-export type {
-  ExecutionBytecodeInspectorProps,
-  DecodedExecutionCall,
-} from './ExecutionBytecodeInspector';
+export { DelegationGraphVisualizer } from './DelegationGraphVisualizer';
+export type { DelegationGraphVisualizerProps } from './DelegationGraphVisualizer';

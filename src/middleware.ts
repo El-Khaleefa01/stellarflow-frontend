@@ -17,6 +17,20 @@ export function middleware(request: NextRequest): NextResponse {
   const scriptDev = isDev ? " 'unsafe-eval'" : "";
   const nextPublicApiUrl = process.env.NEXT_PUBLIC_API_URL;
   const apiUrls = nextPublicApiUrl ? ` ${nextPublicApiUrl}` : '';
+  const sep24FrameOrigins = (process.env.NEXT_PUBLIC_SEP24_ANCHOR_ORIGINS ?? '')
+    .split(',')
+    .flatMap((value) => {
+      const origin = value.trim();
+      if (!origin) return [];
+      try {
+        const url = new URL(origin);
+        return url.protocol === 'https:' && url.origin === origin.replace(/\/$/, '')
+          ? [url.origin]
+          : [];
+      } catch {
+        return [];
+      }
+    });
   const isEmbedRoute = pathname === '/embed/swap';
 
   const connectSrc = [
@@ -42,6 +56,7 @@ export function middleware(request: NextRequest): NextResponse {
 
   const cspHeader = `
     default-src 'self';
+    frame-src 'self' ${sep24FrameOrigins.join(' ')};
     script-src ${scriptSrc};
     style-src 'self' 'nonce-${nonce}';
     connect-src ${connectSrc};

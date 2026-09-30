@@ -2,6 +2,7 @@
 
 import React, { useMemo, useState } from "react";
 import { Calculator, TrendingUp } from "lucide-react";
+import { BalanceValue, useBalancePrivacy } from "@/context/BalancePrivacyContext";
 
 const MIN_INVESTMENT = 100;
 const MAX_INVESTMENT = 100_000;
@@ -42,6 +43,7 @@ function buildProjection(investment: number, days: number): ProjectionPoint[] {
 }
 
 function ComparisonChart({ points, investment }: { points: ProjectionPoint[]; investment: number }) {
+  const { hidden } = useBalancePrivacy();
   const width = 720;
   const height = 270;
   const padding = { top: 18, right: 18, bottom: 32, left: 64 };
@@ -59,7 +61,7 @@ function ComparisonChart({ points, investment }: { points: ProjectionPoint[]; in
           return (
             <g key={ratio}>
               <line x1={padding.left} x2={width - padding.right} y1={y(value)} y2={y(value)} stroke="rgba(148,163,184,0.16)" />
-              <text x={padding.left - 8} y={y(value) + 4} textAnchor="end" fill="#64748b" fontSize="11">{formatUsd(value)}</text>
+              <text x={padding.left - 8} y={y(value) + 4} textAnchor="end" fill="#64748b" fontSize="11">{hidden ? "••••••" : formatUsd(value)}</text>
             </g>
           );
         })}
@@ -102,7 +104,7 @@ export function LpVaultStrategyBacktester() {
         <div className="grid gap-6 lg:grid-cols-[280px_minmax(0,1fr)]">
           <div className="space-y-6 rounded-xl border border-slate-800 bg-slate-950/60 p-5">
             <label className="block">
-              <span className="flex items-center justify-between text-sm font-medium text-slate-200"><span>Initial investment</span><strong className="text-lime-300">{formatUsd(investment)}</strong></span>
+              <span className="flex items-center justify-between text-sm font-medium text-slate-200"><span>Initial investment</span><strong className="text-lime-300"><BalanceValue>{formatUsd(investment)}</BalanceValue></strong></span>
               <input type="range" min={MIN_INVESTMENT} max={MAX_INVESTMENT} step={100} value={investment} onChange={(event) => setInvestment(Number(event.target.value))} className="mt-4 w-full accent-lime-400" aria-label="Initial investment" />
               <span className="mt-2 flex justify-between text-[11px] text-slate-500"><span>{formatUsd(MIN_INVESTMENT)}</span><span>{formatUsd(MAX_INVESTMENT)}</span></span>
             </label>
@@ -140,11 +142,11 @@ export function LpVaultStrategyBacktester() {
 }
 
 function Metric({ label, value, accent = false }: { label: string; value: string; accent?: boolean }) {
-  return <div className="rounded-lg border border-slate-800 bg-slate-950/60 p-3"><p className="text-[11px] text-slate-500">{label}</p><p className={`mt-1 text-sm font-semibold ${accent ? "text-lime-300" : "text-white"}`}>{value}</p></div>;
+  return <div className="rounded-lg border border-slate-800 bg-slate-950/60 p-3"><p className="text-[11px] text-slate-500">{label}</p><p className={`mt-1 text-sm font-semibold ${accent ? "text-lime-300" : "text-white"}`}>{label === "APY average" ? value : <BalanceValue>{value}</BalanceValue>}</p></div>;
 }
 
 function Breakdown({ label, value, highlight = false }: { label: string; value: string; highlight?: boolean }) {
-  return <div className="min-w-0 p-4"><p className="truncate text-xs text-slate-500">{label}</p><p className={`mt-1 text-sm font-semibold ${highlight ? "text-lime-300" : "text-slate-200"}`}>{value}</p></div>;
+  return <div className="min-w-0 p-4"><p className="truncate text-xs text-slate-500">{label}</p><p className={`mt-1 text-sm font-semibold ${highlight ? "text-lime-300" : "text-slate-200"}`}><BalanceValue>{value}</BalanceValue></p></div>;
 }
 
 export default LpVaultStrategyBacktester;

@@ -13,6 +13,7 @@ import { GasEstimateBadge } from "./GasEstimateBadge";
 import { TokenSelectorModal } from "./TokenSelectorModal";
 import { SlippageSettingsModal } from "./SlippageSettingsModal";
 import type { TokenOption } from "./SwapForm";
+import { SlippageVisualizer } from "@/components/trading/SlippageVisualizer";
 
 interface SwapCardProps {
   tokens: TokenOption[];
@@ -109,7 +110,7 @@ export const SwapCard: React.FC<SwapCardProps> = ({ tokens, onSwapSuccess }) => 
   // A new quote supersedes any prior high price-impact acknowledgement.
   useEffect(() => {
     setAcknowledgedPriceImpact(false);
-  }, [fromAmount, fromToken.address, toToken.address]);
+  }, [fromAmount, fromToken.address, toToken.address, slippagePercent]);
 
   const handleSwitchTokens = () => {
     setFromToken(toToken);
@@ -136,7 +137,8 @@ export const SwapCard: React.FC<SwapCardProps> = ({ tokens, onSwapSuccess }) => 
   const hasInsufficientBalance = parsedFromAmount > parsedFromBalance;
   const isValidAmount = parsedFromAmount > 0;
   const isHighPriceImpact = isValidAmount && priceImpact > HIGH_SLIPPAGE_WARNING_THRESHOLD;
-  const requiresPriceImpactAck = isHighPriceImpact && !acknowledgedPriceImpact;
+  const isHighSlippage = slippagePercent > 3;
+  const requiresPriceImpactAck = (isHighPriceImpact || isHighSlippage) && !acknowledgedPriceImpact;
 
   const minAmountOut = useMemo(() => {
     const quoted = parseFloat(toAmount);
@@ -194,7 +196,7 @@ export const SwapCard: React.FC<SwapCardProps> = ({ tokens, onSwapSuccess }) => 
   };
 
   return (
-    <div className="w-full max-w-lg mx-auto rounded-2xl border border-gray-800 bg-gray-900 p-6 shadow-2xl">
+    <div className="glass-surface glass-panel w-full max-w-lg mx-auto rounded-2xl border p-6">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-bold text-white">Swap</h2>
         <div className="flex items-center gap-2">
@@ -263,16 +265,21 @@ export const SwapCard: React.FC<SwapCardProps> = ({ tokens, onSwapSuccess }) => 
           </div>
         )}
 
+        {isValidAmount && minAmountOut !== null && (
+          <SlippageVisualizer expectedOutput={Number(toAmount) || 0} outputSymbol={toToken.symbol} slippagePercent={slippagePercent} onSlippageChange={setSlippagePercent} />
+        )}
+
         {isValidAmount && <PathVisualizer fromToken={fromToken} toToken={toToken} amount={fromAmount} />}
 
-        {isHighPriceImpact && (
+        {(isHighPriceImpact || isHighSlippage) && (
           <div
             className="rounded-lg border border-red-500/40 bg-red-950/20 p-3 space-y-2"
             role="alert"
           >
             <p className="text-xs font-semibold text-red-300">
-              This swap has a price impact of {priceImpact.toFixed(2)}%. You may receive
-              significantly less value than you put in.
+              {isHighSlippage
+                ? `Slippage tolerance is ${slippagePercent}%, above the 3% danger threshold. You may receive significantly less value than expected.`
+                : `This swap has a price impact of ${priceImpact.toFixed(2)}%. You may receive significantly less value than you put in.`}
             </p>
             <label className="flex items-start gap-2 text-xs text-red-200">
               <input

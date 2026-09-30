@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Icon from '@/components/icons/Icon';
 import { ICON_IDS } from '@/components/icons/iconIds';
 import { useDebounce } from '../hooks/useDebounce';
@@ -18,6 +18,10 @@ import { useDashboardCustomizer } from '@/components/dashboard/useDashboardCusto
 import { WalletNonceResync } from '@/components/wallet/WalletNonceResync';
 import { useZKProofLoader } from '@/components/zk/useZKProofLoader';
 import { useThemeContext, type Theme } from '@/context/ThemeContext';
+import { CustomTokenSettings } from '@/components/tokens/CustomTokenSettings';
+import { NotificationPreferencesPanel } from '@/components/settings/NotificationPreferencesPanel';
+import { KeyboardShortcutsSettings } from '@/components/keyboard-shortcuts/KeyboardShortcutsSettings';
+import { NetworkProvider, useNetwork, useNetworkActions } from '@/app/components/providers/NetworkProvider';
 
 interface Settings {
   emailReports: boolean;
@@ -38,9 +42,44 @@ const TOGGLE_STYLES = {
   },
 };
 
-export default function SettingsPage() {
+function SettingsContent() {
   const [showKey, setShowKey] = useState(false);
   const [screenLockModalOpen, setScreenLockModalOpen] = useState(false);
+
+  // Custom Horizon endpoint form
+  const { horizonUrl, customHorizonUrl } = useNetwork();
+  const { setCustomHorizonEndpoint, resetToDefaultEndpoint } = useNetworkActions();
+  const [inputUrl, setInputUrl] = useState('');
+  const [isValidating, setIsValidating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  const handleSaveCustomRpc = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setError(null);
+    setSuccessMessage(null);
+    setIsValidating(true);
+
+    try {
+      const saved = await setCustomHorizonEndpoint(inputUrl);
+      if (saved) {
+        setSuccessMessage(
+          inputUrl.trim()
+            ? 'Custom Horizon endpoint saved.'
+            : 'Switched back to the default Horizon endpoint.',
+        );
+        setInputUrl('');
+      } else {
+        setError('Could not reach that endpoint — kept the current one.');
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : 'Failed to save the endpoint.',
+      );
+    } finally {
+      setIsValidating(false);
+    }
+  };
   const {
     isEnabled: soundEffectsEnabled,
     toggle: toggleSoundEffects,
@@ -171,6 +210,7 @@ export default function SettingsPage() {
               <input type="text" defaultValue="Lead Trainer / Developer" disabled className="w-full bg-[#0d1117] border border-gray-800 rounded-md py-2 px-3 text-sm text-gray-500 cursor-not-allowed" />
             </div>
           </div>
+        </section>
 
         <section className="bg-[#161b22] border border-gray-800 rounded-xl p-6">
           <h2 className="text-lg font-semibold mb-6 flex items-center gap-2">
@@ -217,8 +257,21 @@ export default function SettingsPage() {
           </div>
         </section>
 
+        {/* Push Notifications Settings */}
+        <section className="bg-[#161b22] border border-gray-800 rounded-xl p-6">
+          <h2 className="text-lg font-semibold mb-6 flex items-center gap-2">
+            <Icon id={ICON_IDS.bell} size={20} className="text-blue-400" />
+            Push Notifications
+          </h2>
+          <NotificationPreferencesPanel compact />
+        </section>
+
         {/* Auto-Lock Security Settings */}
         <AutoLockSettings />
+
+        <CustomTokenSettings />
+
+        <KeyboardShortcutsSettings />
 
         <section className="bg-[#161b22] border border-gray-800 rounded-xl p-6">
           <div className="flex justify-between items-center mb-6">
@@ -307,15 +360,12 @@ export default function SettingsPage() {
               </div>
             </form>
           </div>
-        </main>
-      </div>
-
-      <NotificationPreferencesDrawer 
-        isOpen={isDrawerOpen} 
-        onClose={() => setIsDrawerOpen(false)} 
-      />
     </div>
   );
+}
+
+export default function SettingsPage() {
+  return <NetworkProvider><SettingsContent /></NetworkProvider>;
 }
 
 function ToggleItem({ icon, title, description, enabled, onToggle, onConfigure }: { icon: React.ReactNode, title: string, description: string, enabled: boolean, onToggle: () => void, onConfigure?: () => void }) {

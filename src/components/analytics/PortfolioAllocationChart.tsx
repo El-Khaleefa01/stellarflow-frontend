@@ -9,19 +9,10 @@ import {
   type ChartConfiguration,
 } from "chart.js";
 import type { PortfolioAllocationSlice } from "@/types/portfolio";
+import { BalanceValue } from "@/context/BalancePrivacyContext";
+import { useAccessibleChartPalette } from "@/hooks/useAccessibleChartPalette";
 
 Chart.register(ArcElement, DoughnutController, Tooltip);
-
-const SLICE_COLORS = [
-  "#60a5fa",
-  "#34d399",
-  "#f59e0b",
-  "#f472b6",
-  "#a78bfa",
-  "#22d3ee",
-  "#fb923c",
-  "#4ade80",
-];
 
 interface PortfolioAllocationChartProps {
   allocation: PortfolioAllocationSlice[];
@@ -41,6 +32,7 @@ export default function PortfolioAllocationChart({
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const chartRef = useRef<Chart<"doughnut"> | null>(null);
   const [hiddenSymbols, setHiddenSymbols] = useState<Set<string>>(new Set());
+  const { series: sliceColors, sliceBorderColor } = useAccessibleChartPalette();
 
   const total = useMemo(
     () => allocation.reduce((sum, slice) => sum + slice.valueUsd, 0),
@@ -58,9 +50,9 @@ export default function PortfolioAllocationChart({
           {
             data: allocation.map((slice) => slice.valueUsd),
             backgroundColor: allocation.map(
-              (_, index) => SLICE_COLORS[index % SLICE_COLORS.length],
+              (_, index) => sliceColors[index % sliceColors.length],
             ),
-            borderColor: "#161b22",
+            borderColor: sliceBorderColor,
             borderWidth: 2,
             hoverOffset: 8,
           },
@@ -91,7 +83,7 @@ export default function PortfolioAllocationChart({
       chartRef.current?.destroy();
       chartRef.current = null;
     };
-  }, [allocation, total]);
+  }, [allocation, total, sliceColors, sliceBorderColor]);
 
   const toggleSlice = (symbol: string, index: number) => {
     const chart = chartRef.current;
@@ -113,14 +105,14 @@ export default function PortfolioAllocationChart({
 
   return (
     <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-      <div className="relative mx-auto h-48 w-48 shrink-0 sm:mx-0">
+      <div className="hc-chart-surface relative mx-auto h-48 w-48 shrink-0 rounded-full sm:mx-0">
         <canvas ref={canvasRef} aria-label="Portfolio allocation by asset" />
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
           <span className="text-[11px] uppercase tracking-wider text-neutral-500">
             Total
           </span>
           <span className="font-mono text-lg font-bold text-neutral-100">
-            {formatUsd(total)}
+            <BalanceValue>{formatUsd(total)}</BalanceValue>
           </span>
         </div>
       </div>
@@ -143,7 +135,7 @@ export default function PortfolioAllocationChart({
                   <span
                     className="h-2.5 w-2.5 shrink-0 rounded-full"
                     style={{
-                      backgroundColor: SLICE_COLORS[index % SLICE_COLORS.length],
+                      backgroundColor: sliceColors[index % sliceColors.length],
                     }}
                   />
                   {slice.symbol}

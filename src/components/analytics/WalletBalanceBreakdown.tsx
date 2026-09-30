@@ -32,6 +32,7 @@ import type {
   AssetProtocolCategory,
   PerAssetBreakdown,
 } from "@/types/portfolio";
+import { BalanceValue } from "@/context/BalancePrivacyContext";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -162,7 +163,7 @@ export default function WalletBalanceBreakdown({
           </p>
         </div>
         <span className="font-mono text-sm font-semibold text-neutral-200">
-          {formatUsd(grandTotal)}
+          <BalanceValue>{formatUsd(grandTotal)}</BalanceValue>
         </span>
       </div>
 
@@ -209,7 +210,7 @@ export default function WalletBalanceBreakdown({
               {/* Amount + percentage */}
               <div className="shrink-0 text-right">
                 <p className="font-mono text-sm font-semibold text-neutral-100">
-                  {formatUsd(row.totalUsd)}
+                  <BalanceValue>{formatUsd(row.totalUsd)}</BalanceValue>
                 </p>
                 <p className="font-mono text-xs text-neutral-500">
                   {pct.toFixed(1)}%
@@ -247,7 +248,7 @@ export default function WalletBalanceBreakdown({
                 <span className="font-semibold text-neutral-200">
                   {asset.symbol}
                 </span>
-                <span>{formatUsd(asset.totalUsd)}</span>
+                <BalanceValue>{formatUsd(asset.totalUsd)}</BalanceValue>
               </li>
             ))}
           </ul>
