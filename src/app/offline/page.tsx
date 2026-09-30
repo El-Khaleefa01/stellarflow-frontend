@@ -15,7 +15,7 @@ export default function OfflinePage() {
     if (typeof window !== 'undefined') {
       const lastUpdate = localStorage.getItem('stellarflow-last-update');
       setLastUpdateTime(lastUpdate);
-      
+
       // Check if we have any cached data
       const hasCachedTokens = localStorage.getItem('stellarflow-tokens');
       const hasCachedPools = localStorage.getItem('stellarflow-pools');
@@ -25,10 +25,10 @@ export default function OfflinePage() {
 
   const handleRetry = async () => {
     setRetrying(true);
-    
+
     // Force a network check
     try {
-      await fetch('/api/health', { 
+      await fetch('/api/health', {
         method: 'HEAD',
         cache: 'no-cache',
         signal: AbortSignal.timeout(5000)
@@ -36,19 +36,19 @@ export default function OfflinePage() {
     } catch {
       // Network is still unavailable
     }
-    
+
     setTimeout(() => setRetrying(false), 2000);
   };
 
   const formatTimeAgo = (dateString: string | null) => {
     if (!dateString) return "Unknown";
-    
+
     const date = new Date(dateString);
     const now = new Date();
     const diff = now.getTime() - date.getTime();
     const hours = Math.floor(diff / (1000 * 60 * 60));
     const minutes = Math.floor(diff / (1000 * 60));
-    
+
     if (hours > 0) return `${hours}h ago`;
     if (minutes > 0) return `${minutes}m ago`;
     return "Just now";
@@ -115,7 +115,7 @@ export default function OfflinePage() {
               <span className="text-red-400 font-medium">Offline</span>
             </span>
           </div>
-          
+
           {lastOfflineTime && (
             <div className="flex items-center gap-2 text-xs text-zinc-500 mb-3">
               <Clock className="h-3 w-3" />
@@ -180,12 +180,6 @@ export default function OfflinePage() {
         </div>
       </div>
 
-      <style jsx>{`
-        @keyframes loading {
-          0% { transform: translateX(-100%); }
-          50% { transform: translateX(0%); }
-          100% { transform: translateX(100%); }
-        }
-      `}</style>
     </main>
   );
+}

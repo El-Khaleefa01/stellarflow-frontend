@@ -24,10 +24,9 @@ import { AccessibilityProvider } from "@/context/AccessibilityContext";
 import { HapticProvider } from "@/components/providers/HapticProvider";
 import { PushNotificationRoot } from "@/components/notifications";
 import { RpcFailoverMonitor } from "./components/providers/RpcFailoverMonitor";
-import { NetworkProvider } from "./components/providers/NetworkProvider";
 import { CommandPalette } from "@/components/command-palette";
-import { KeyboardShortcutsRoot } from "@/components/keyboard-shortcuts/KeyboardShortcutsRoot";
 import { GlobalErrorBoundary } from "@/components/GlobalErrorBoundary";
+import { MobileBottomNav } from "@/components/navigation";
 
 export const metadata: Metadata = {
   title: "StellarFlow Network Dashboard",
@@ -37,11 +36,11 @@ export const metadata: Metadata = {
   themeColor: "#39ff14",
   appleWebApp: {
     capable: true,
-    statusBarStyle: "black-translucent",
+    statusBarStyle: "default",
     title: "StellarFlow",
   },
   icons: {
-    apple: "/apple-touch-icon.png",
+    apple: "/icon-192.svg",
   },
   other: {
     "mobile-web-app-capable": "yes",
@@ -53,9 +52,6 @@ import { subresourceRecoveryScript } from "@/utils/subresourceRecovery";
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode; }>) {
-  // The CSP nonce is injected by middleware, which only runs on the Node
-  // server. Static export (`output: export`) has no middleware, and calling
-  // `headers()` there would make every route (including /_not-found) dynamic.
   const nonce =
     process.env.NEXT_OUTPUT_MODE === "export"
       ? undefined
@@ -112,8 +108,8 @@ export default async function RootLayout({
         {/* PWA: apple-touch-icon for iOS home-screen bookmarks */}
         <link
           rel="apple-touch-icon"
-          href="/apple-touch-icon.png"
-          sizes="180x180"
+          href="/icon-192.svg"
+          sizes="192x192"
         />
         <Script
           id="polyfill-loader"
@@ -177,7 +173,6 @@ export default async function RootLayout({
                       <SwUpdateBanner />
                       <PWAInstallGuideModal />
                       <CommandPalette />
-                      <KeyboardShortcutsRoot />
                   </ProgressBarProvider>
                 </QueryProvider>
               </UserProvider>
@@ -189,4 +184,3 @@ export default async function RootLayout({
     </html>
   );
 }
-

@@ -198,6 +198,19 @@ export function LimitOrderForm({
     assetId: selectedPair.assetSymbol,
     depth: 8,
   });
+  const decimals = DEFAULT_DECIMALS;
+
+  // ── Form state ────────────────────────────────────────────────────────────
+  const [rawPrice, setRawPrice] = useState("");
+  const [rawAmount, setRawAmount] = useState("");
+  const [touchedPrice, setTouchedPrice] = useState(false);
+  const [touchedAmount, setTouchedAmount] = useState(false);
+  const [expiryHours, setExpiryHours] = useState(24);
+
+  // ── Submission state ──────────────────────────────────────────────────────
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
 
   const aggregatedBids = useMemo(
     () => aggregateOrderBookLevels(orderBook?.bids ?? [], "bid"),
@@ -219,17 +232,23 @@ export function LimitOrderForm({
     [aggregatedBids, aggregatedAsks],
   );
 
-  // ── Form state ────────────────────────────────────────────────────────────
-  const [rawPrice, setRawPrice] = useState("");
-  const [rawAmount, setRawAmount] = useState("");
-  const [touchedPrice, setTouchedPrice] = useState(false);
-  const [touchedAmount, setTouchedAmount] = useState(false);
-  const [expiryHours, setExpiryHours] = useState(24);
+  const handleBookSelection = useCallback(
+    (level: OrderBookLevel, side: "bid" | "ask") => {
+      setRawPrice(formatPrice(level.price, decimals));
+      setRawAmount(level.amount.toFixed(6));
+      setSubmitError(null);
+      setSubmitSuccess(null);
+      setTouchedPrice(true);
+      setTouchedAmount(true);
 
-  // ── Submission state ──────────────────────────────────────────────────────
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
-  const [submitSuccess, setSubmitSuccess] = useState<string | null>(null);
+      if (side === "bid") {
+        setSubmitSuccess(`Bid level ${level.price.toFixed(decimals)} prefilled.`);
+      } else {
+        setSubmitSuccess(`Ask level ${level.price.toFixed(decimals)} prefilled.`);
+      }
+    },
+    [decimals],
+  );
 
   // ── Orders state ──────────────────────────────────────────────────────────
   const [activeOrders, setActiveOrders] = useState<ActiveLimitOrder[]>([]);
@@ -266,7 +285,6 @@ export function LimitOrderForm({
     !isSubmitting &&
     wallet?.connected === true;
 
-  const decimals = DEFAULT_DECIMALS;
 
   const handleBookSelection = useCallback(
     (level: OrderBookLevel, side: "bid" | "ask") => {

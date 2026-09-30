@@ -4,6 +4,11 @@
  * Barrel file — re-exports public common UI components and utilities.
  */
 
-export { TokenBadge, type TokenBadgeProps } from "./TokenBadge";
-export { NetworkHealthWidget, type NetworkHealthWidgetProps } from "./NetworkHealthWidget";
-export { CongestionFeeAlert, type CongestionFeeAlertProps } from "./CongestionFeeAlert";
+export { TokenBadge, type TokenBadgeProps } from './TokenBadge';
+
+export {
+  SocialShareModal,
+  type SocialShareModalProps,
+  type SocialShareData,
+  type ShareCategory,
+} from './SocialShareModal';
