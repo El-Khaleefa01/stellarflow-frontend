@@ -1,21 +1,17 @@
 "use client";
 
-import { PriceData, OrderBookSnapshot } from "@/types";
+import { PriceData, OrderBookSnapshot, AmmTradeEvent } from "@/types";
 
 interface SocketMessage {
-  type:
-    | "price_update"
-    | "delta_update"
-    | "orderbook_update"
-    | "multisig_signature_request"
-    | "multisig_signature_resolved";
+  type: "price_update" | "delta_update" | "orderbook_update" | "trade_execution";
   assetId?: string;
-  data: PriceData | Partial<PriceData> | OrderBookSnapshot;
+  data: PriceData | Partial<PriceData> | OrderBookSnapshot | AmmTradeEvent;
   timestamp: number;
 }
 
 type MessageCallback = (data: PriceData | Partial<PriceData>) => void;
 type OrderBookCallback = (data: OrderBookSnapshot) => void;
+type TradeCallback = (data: AmmTradeEvent) => void;
 type StatusCallback = (connected: boolean) => void;
 
 /**
@@ -37,6 +33,7 @@ export class WebSocketManager {
   // Track listeners for data streams and connection statuses
   private messageListeners: Set<MessageCallback> = new Set();
   private orderBookListeners: Set<OrderBookCallback> = new Set();
+  private tradeListeners: Set<TradeCallback> = new Set();
   private statusListeners: Set<StatusCallback> = new Set();
   private multisigListeners: Set<MultisigCallback> = new Set();
   
@@ -105,11 +102,9 @@ export class WebSocketManager {
             this.orderBookListeners.forEach((callback) =>
               callback(message.data as OrderBookSnapshot),
             );
-          } else if (message.type.startsWith("multisig_")) {
-            // Co-signer notification frames (#962) keep their envelope so the
-            // multisig provider can tell requests from resolutions.
-            this.multisigListeners.forEach((callback) =>
-              callback(message as MultisigSocketMessage),
+          } else if (message.type === "trade_execution") {
+            this.tradeListeners.forEach((callback) =>
+              callback(message.data as AmmTradeEvent),
             );
           }
         } catch (err) {
@@ -163,13 +158,13 @@ export class WebSocketManager {
     this.orderBookListeners.delete(callback);
   }
 
-  /** Subscribe to multisig co-signer frames (#962). */
-  public subscribeToMultisigEvents(callback: MultisigCallback) {
-    this.multisigListeners.add(callback);
+  // Subscribe a component listener to AMM trade execution events
+  public subscribeToTrades(callback: TradeCallback) {
+    this.tradeListeners.add(callback);
   }
 
-  public unsubscribeFromMultisigEvents(callback: MultisigCallback) {
-    this.multisigListeners.delete(callback);
+  public unsubscribeFromTrades(callback: TradeCallback) {
+    this.tradeListeners.delete(callback);
   }
 
   // Subscribe a component listener to status change events
