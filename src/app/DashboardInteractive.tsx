@@ -62,6 +62,11 @@ const DashboardTrafficChart = dynamic(
   },
 );
 
+const NetworkHealthWidget = dynamic(
+  () => import("@/components/common/NetworkHealthWidget"),
+  { ssr: false, loading: () => <PriceFeedCardSkeleton /> }
+);
+
 interface RateCard {
   currency: string;
   rate: number;
@@ -306,6 +311,10 @@ export default function DashboardInteractive({
 
       <ErrorBoundary name="GasPriceEstimator">
         <GasPriceEstimator />
+      </ErrorBoundary>
+
+      <ErrorBoundary name="NetworkHealthWidget">
+        <NetworkHealthWidget />
       </ErrorBoundary>
 
       {/*

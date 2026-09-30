@@ -23,11 +23,6 @@ export {
 } from "./OrderBookDepthRatioBar";
 
 export {
-  CumulativeDepthChart,
-  type CumulativeDepthChartProps,
-} from "./CumulativeDepthChart";
-
-export {
-  CumulativeDepthChartView,
-  type CumulativeDepthChartViewProps,
-} from "./CumulativeDepthChartView";
+  HighPriceImpactModal,
+  type HighPriceImpactModalProps,
+} from "./HighPriceImpactModal";
