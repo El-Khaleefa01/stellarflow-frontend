@@ -166,6 +166,15 @@ body {
   to { opacity: 0; transform: translateY(7rem) rotate(260deg); }
 }
 
+/* Brief green pulse on the AMM fee tracker when a fill spikes well above the
+   recent trade-size average. One-shot: the component re-keys the overlay so
+   consecutive spikes restart the run. */
+@keyframes fee-spike-glow {
+  0% { opacity: 0; }
+  25% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .status-ping,
   .status-pulse,
