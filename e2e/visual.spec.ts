@@ -56,6 +56,9 @@ test.describe('Visual regression — landing page (Issue #603)', () => {
       await expect(page).toHaveScreenshot(`landing-${breakpoint.name}.png`, {
         fullPage: true,
         animations: 'disabled',
+        // Permit tiny font rasterization and dynamic map rendering differences
+        // while still catching visible layout and color regressions.
+        maxDiffPixelRatio: 0.005,
       });
     });
   }
