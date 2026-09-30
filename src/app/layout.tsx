@@ -11,7 +11,7 @@ import Script from "next/script";
 import SvgSprite from "@/components/icons/SvgSprite";
 import { SecurityBanner } from "@/components/navigation/SecurityBanner";
 import { PWAInstallGuideModal } from "@/components/pwa/PWAInstallGuideModal";
-import { OfflineBanner } from "./components/OfflineBanner";
+import { OfflineBanner } from "@/components/pwa/OfflineBanner";
 import { SwUpdateBanner } from "@/components/pwa/SwUpdateBanner";
 import { ScreenLockProvider } from "@/components/security/ScreenLockModal";
 import { SessionTimeoutManager } from "@/components/security/SessionTimeoutManager";
@@ -24,8 +24,11 @@ import { AccessibilityProvider } from "@/context/AccessibilityContext";
 import { HapticProvider } from "@/components/providers/HapticProvider";
 import { PushNotificationRoot } from "@/components/notifications";
 import { RpcFailoverMonitor } from "./components/providers/RpcFailoverMonitor";
+import { NetworkProvider } from "./components/providers/NetworkProvider";
 import { CommandPalette } from "@/components/command-palette";
+import { KeyboardShortcutsRoot } from "@/components/keyboard-shortcuts/KeyboardShortcutsRoot";
 import { GlobalErrorBoundary } from "@/components/GlobalErrorBoundary";
+import { MobileBottomNav } from "@/components/navigation";
 
 export const metadata: Metadata = {
   title: "StellarFlow Network Dashboard",
@@ -35,11 +38,11 @@ export const metadata: Metadata = {
   themeColor: "#39ff14",
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
+    statusBarStyle: "black-translucent",
     title: "StellarFlow",
   },
   icons: {
-    apple: "/icon-192.svg",
+    apple: "/apple-touch-icon.png",
   },
   other: {
     "mobile-web-app-capable": "yes",
@@ -51,7 +54,13 @@ import { subresourceRecoveryScript } from "@/utils/subresourceRecovery";
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode; }>) {
-  const nonce = (await headers()).get("x-nonce") ?? undefined;
+  // The CSP nonce is injected by middleware, which only runs on the Node
+  // server. Static export (`output: export`) has no middleware, and calling
+  // `headers()` there would make every route (including /_not-found) dynamic.
+  const nonce =
+    process.env.NEXT_OUTPUT_MODE === "export"
+      ? undefined
+      : ((await headers()).get("x-nonce") ?? undefined);
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -104,8 +113,8 @@ export default async function RootLayout({
         {/* PWA: apple-touch-icon for iOS home-screen bookmarks */}
         <link
           rel="apple-touch-icon"
-          href="/icon-192.svg"
-          sizes="192x192"
+          href="/apple-touch-icon.png"
+          sizes="180x180"
         />
         <Script
           id="polyfill-loader"
@@ -169,6 +178,7 @@ export default async function RootLayout({
                       <SwUpdateBanner />
                       <PWAInstallGuideModal />
                       <CommandPalette />
+                      <KeyboardShortcutsRoot />
                   </ProgressBarProvider>
                 </QueryProvider>
               </UserProvider>
@@ -180,3 +190,4 @@ export default async function RootLayout({
     </html>
   );
 }
+
