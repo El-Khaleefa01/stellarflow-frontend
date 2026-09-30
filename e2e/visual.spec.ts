@@ -22,9 +22,9 @@ async function prepareForSnapshot(page: Page) {
   // don't produce false-positive pixel diffs.
   await page.emulateMedia({ reducedMotion: 'reduce' });
 
-  await page.getByText('Live Network Map').waitFor({ state: 'visible' });
-  await page.getByText('NGN/XLM (24h)').waitFor({ state: 'visible' });
-  await page.getByText('Raw source data').waitFor({ state: 'visible' });
+  await page.getByRole('heading', { name: 'Live Network Map' }).first().waitFor({ state: 'visible' });
+  await page.getByText('NGN/XLM (24h)').first().waitFor({ state: 'visible' });
+  await page.getByText('Raw source data').first().waitFor({ state: 'visible' });
 
   // Hide live dashboard panels that hydrate with dynamic data and can change
   // layout height between runs. The visual snapshots are meant to cover the
