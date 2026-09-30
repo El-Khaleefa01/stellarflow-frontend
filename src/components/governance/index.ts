@@ -17,3 +17,6 @@ export type {
   MobileVoteSubmission,
   VoteChoice,
 } from './MobileVoteCard';
+
+export { DelegationGraphVisualizer } from './DelegationGraphVisualizer';
+export type { DelegationGraphVisualizerProps } from './DelegationGraphVisualizer';
