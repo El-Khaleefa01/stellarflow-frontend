@@ -46,7 +46,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: e2e/visual.spec.ts-snapshots
-          key: visual-snapshots-${{ runner.os }}-${{ hashFiles('e2e/visual.spec.ts') }}
+          key: visual-snapshots-${{ runner.os }}-${{ hashFiles('e2e/visual.spec.ts') }}-${{ github.event.pull_request.base.sha }}
+          restore-keys: |
+            visual-snapshots-${{ runner.os }}-${{ hashFiles('e2e/visual.spec.ts') }}-
 
       - name: Start Next.js app
         run: |
