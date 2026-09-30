@@ -1,59 +1,94 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import React from 'react';
-import { FaWallet, FaBell, FaCircleUser, FaRightFromBracket } from 'react-icons/fa6';
+import React, { memo, useCallback } from "react";
+import OptimizedImage from "./OptimizedImage";
+import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
+import Icon from "@/components/icons/Icon";
+import { ICON_IDS } from "@/components/icons/iconIds";
+import { useProgressBar } from "./TopLoadingBar";
+import dynamic from "next/dynamic";
+import MobileMenu from "@/components/navigation/MobileMenu";
+import { AccessibilityToggle } from "@/components/ui/AccessibilityToggle";
+import { PrivacyToggle } from "@/components/privacy";
+import { WalletProvider } from "@/app/components/providers/WalletProvider";
+import { NetworkProvider } from "@/app/components/providers/NetworkProvider";
+import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
-const Nav = () => {
-  const hasAnomaly = true; // replace with real signal condition (e.g., Coinbase GHS Offline)
+// Lazily load the wallet connect button + WalletProvider.
+// WalletProvider pulls in the entire wallet context + @stellar/freighter-api
+// browser extension bridge; deferring it keeps that code out of the initial
+// nav chunk and off the critical path for first contentful paint.
+const WalletConnectButton = dynamic(
+  () => import("./WalletConnectButton"),
+  {
+    ssr: false,
+    // Static placeholder that matches the button's shape to avoid layout shift
+    loading: () => (
+      <div className="wallet-btn flex min-w-0 items-center gap-2 px-3 sm:gap-2.5 sm:px-4 py-2 rounded-2xl text-sm sm:text-base whitespace-nowrap opacity-60 pointer-events-none">
+        <Icon id={ICON_IDS.wallet} size={18} />
+        <span className="truncate">Connect Wallet</span>
+      </div>
+    ),
+  }
+);
 
-  const handleConnectWallet = () => {
-    alert('Connect Wallet clicked! (Add your Web3 logic here)');
-  };
+// Network status indicator & RPC failover dropdown polls active node on heartbeat
+const NetworkStatusIndicator = dynamic(
+  () => import("@/components/network/NetworkStatusIndicator").then((m) => m.NetworkStatusIndicator),
+  { ssr: false, loading: () => null },
+);
+
+const Nav = memo(() => {
+  const hasAnomaly = true;
+  const router = useRouter();
+  const pathname = usePathname();
 
   return (
-    <main className="sticky top-0 z-50 bg-zinc-950 border-b border-zinc-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-        
+    <main className="sticky top-0 z-50 bg-background text-foreground border-b border-border">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 flex flex-nowrap items-center justify-between gap-3">
         {/* Left Side: Logo + Title */}
-        <div className="flex items-center gap-3">
-          {/* StellarFlow Logo*/}
-          <div className="shrink-0">
-            <Image
-              src="/sf.png"
+        <div className="flex-1 min-w-0 flex items-center gap-3 overflow-hidden">
+          <NetworkProvider>
+            <WalletProvider>
+              <MobileMenu />
+            </WalletProvider>
+          </NetworkProvider>
+          {/* StellarFlow Logo — optimized WebP with next/image (Issue #46) */}
+          <div className="shrink-0" style={{ aspectRatio: "1 / 1", width: 48, height: 48 }}>
+            <OptimizedImage
+              src="/sf.webp"
               alt="StellarFlow Logo"
               width={48}
               height={48}
               className="rounded-full object-contain"
               priority
+              quality={90}
+              sizes="48px"
             />
           </div>
 
           {/* Title */}
           <h1 className="text-lg sm:text-2xl md:text-3xl font-bold tracking-tighter leading-none">
-            Impact Oracle:{' '}
-            <span className="text-[#99DC1B]">Africa</span>
+            Impact Oracle: <span className="text-[#99DC1B]">Africa</span>
           </h1>
         </div>
 
-        <div className="flex items-center gap-3">
-          <button
-            onClick={handleConnectWallet}
-            className="wallet-btn group flex items-center gap-2.5 sm:gap-3 
-                       px-5 sm:px-7 py-3 rounded-2xl font-semibold 
-                       text-sm sm:text-base transition-all duration-300 
-                       hover:shadow-xl active:scale-95 whitespace-nowrap"
-          >
-            <FaWallet className="w-5 h-5 transition-transform group-hover:rotate-12" />
-            <span>Connect <span className='max-md:hidden'>Wallet</span></span>
-          </button>
+        <div className="flex flex-wrap items-center gap-2">
+          <NetworkStatusIndicator className="hidden sm:inline-block" />
+          <WalletConnectButton />
+          <ThemeToggle className="text-foreground/70 hover:bg-control-hover" />
+          <AccessibilityToggle />
+          <PrivacyToggle />
 
           <button
             aria-label="System anomaly alerts"
-            className="relative p-2 rounded-xl hover:bg-zinc-800 transition-colors"
-            onClick={() => alert('View current system anomalies (implement dashboard logic)')}
+            className="relative p-2 rounded-xl hover:bg-zinc-800 transition-colors high-frequency-badge hidden md:inline-flex"
+            onClick={() =>
+              alert("View current system anomalies (implement dashboard logic)")
+            }
           >
-            <FaBell className="w-6 h-6 text-slate-200" />
+            <Icon id={ICON_IDS.bell} size={20} className="text-slate-200" />
             {hasAnomaly && (
               <span className="absolute -top-1 -right-1 inline-flex h-3 w-3">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75" />
@@ -62,26 +97,35 @@ const Nav = () => {
             )}
           </button>
 
-          <button
-            aria-label="User profile"
-            className="p-2 rounded-xl hover:bg-zinc-800 transition-colors"
-            onClick={() => alert('User settings (implement)')}
+          <Link
+            href="/admin/settings"
+            prefetch={false}
+            onFocus={() => router.prefetch('/admin/settings')}
+            onMouseEnter={() => {
+              if (pathname !== '/admin/settings') router.prefetch('/admin/settings')
+            }}
+            onPointerEnter={() => {
+              if (pathname !== '/admin/settings') router.prefetch('/admin/settings')
+            }}
+            aria-label="Admin settings"
+            className="p-2 rounded-xl hover:bg-zinc-800 transition-colors hidden md:inline-flex"
           >
-            <FaCircleUser className="w-6 h-6 text-slate-200" />
-          </button>
+            <Icon id={ICON_IDS.user} size={20} className="text-slate-200" />
+          </Link>
 
           <button
             aria-label="Sign out"
-            className="p-2 rounded-xl hover:bg-zinc-800 transition-colors"
-            onClick={() => alert('Sign out (implement)')}
+            className="p-2 rounded-xl hover:bg-zinc-800 transition-colors hidden md:inline-flex"
+            onClick={() => alert("Sign out (implement)")}
           >
-            <FaRightFromBracket className="w-6 h-6 text-slate-200" />
+            <Icon id={ICON_IDS.logOut} size={20} className="text-slate-200" />
           </button>
         </div>
-
       </div>
     </main>
   );
-};
+});
+
+Nav.displayName = "Nav";
 
 export default Nav;

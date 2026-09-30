@@ -25,7 +25,10 @@ const ModularStatsCard: React.FC<ModularStatsCardProps> = ({
   const isPositive = trend !== undefined && trend >= 0;
 
   return (
-    <div className="bg-[#0A121E] border border-[#1B2A3B] rounded-xl p-6 shadow-lg hover:border-[#39FF14]/50 transition-all duration-300 group">
+    <div
+      
+      className="relative h-full bg-[#0A121E] border border-[#1B2A3B] rounded-xl p-6 shadow-lg hover:border-[#39FF14]/50 transition-colors duration-300 group"
+    >
       <div className="flex flex-col gap-2">
         {/* Label */}
         <h3 className="text-gray-400 text-xs font-semibold uppercase tracking-wider group-hover:text-[#39FF14] transition-colors">
@@ -34,9 +37,21 @@ const ModularStatsCard: React.FC<ModularStatsCardProps> = ({
 
         {/* Value Area */}
         <div className="flex items-baseline gap-2">
-          <span className="text-4xl font-black text-white leading-none">
-            {formattedValue}
-          </span>
+          <span
+  className="
+    text-4xl
+    font-black
+    text-white
+    leading-none
+    font-mono
+    tabular-nums
+    inline-block
+    min-w-[8ch]
+    text-right
+  "
+>
+    {formattedValue}
+</span>
           {unit && (
             <span className="text-gray-500 text-sm font-bold">{unit}</span>
           )}
@@ -53,7 +68,9 @@ const ModularStatsCard: React.FC<ModularStatsCardProps> = ({
               }`}
             >
               <span>{isPositive ? "▲" : "▼"}</span>
-              <span>{Math.abs(trend)}%</span>
+            <span className="font-mono tabular-nums min-w-[5ch] text-right">
+    {Math.abs(trend)}%
+</span>
             </div>
             <span className="text-[10px] text-gray-600 font-medium italic">
               vs last 24h
@@ -69,4 +86,4 @@ const ModularStatsCard: React.FC<ModularStatsCardProps> = ({
   );
 };
 
-export default ModularStatsCard;
+export default React.memo(ModularStatsCard);
