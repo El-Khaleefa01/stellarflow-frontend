@@ -14,6 +14,18 @@ type OrderBookCallback = (data: OrderBookSnapshot) => void;
 type TradeCallback = (data: AmmTradeEvent) => void;
 type StatusCallback = (connected: boolean) => void;
 
+/**
+ * Multisig frames (`multisig_signature_request` / `multisig_signature_resolved`)
+ * are forwarded as the raw `{ type, data }` envelope rather than a price tick,
+ * so consumers can validate them with `parseMultisigSocketEvent` (#962).
+ */
+export interface MultisigSocketMessage {
+  type: string;
+  data?: unknown;
+}
+
+type MultisigCallback = (message: MultisigSocketMessage) => void;
+
 export class WebSocketManager {
   private static instance: WebSocketManager | null = null;
   private ws: WebSocket | null = null;
@@ -23,6 +35,7 @@ export class WebSocketManager {
   private orderBookListeners: Set<OrderBookCallback> = new Set();
   private tradeListeners: Set<TradeCallback> = new Set();
   private statusListeners: Set<StatusCallback> = new Set();
+  private multisigListeners: Set<MultisigCallback> = new Set();
   
   // Keep an aggregated set of all sub-assets requested by various hooks
   private globalSubscribedAssets: Set<string> = new Set();
