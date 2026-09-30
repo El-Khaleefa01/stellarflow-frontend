@@ -38,11 +38,34 @@
   --muted: rgba(255, 255, 255, 0.45);
   --control: #161b22;
   --control-hover: #1c2128;
+
+  /* Accessibility tokens — non-boosted (dark) defaults. */
+  --contrast-focus: #ffff00;
+  --accent: #39ff14;
+  --accent-foreground: #0a0f1e;
+  --status-success: #4ade80;
+  --status-warning: #fbbf24;
+  --status-danger: #f87171;
+  --status-info: #60a5fa;
+  --chart-1: #60a5fa;
+  --chart-2: #34d399;
+  --chart-3: #f59e0b;
+  --chart-4: #f472b6;
+  --chart-5: #a78bfa;
+  --chart-6: #22d3ee;
 }
 
-/* WCAG AAA-oriented option: normal text is pure white on black, with yellow
-   reserved for emphasis and focus so contrast does not depend on hue. */
-.high-contrast {
+/* ─── High-contrast (WCAG AAA) option ────────────────────────────────────────
+   Activated by `data-contrast="high"` on <html> (the legacy `.high-contrast`
+   class is kept in sync for older call sites). Every text/background pair is
+   verified by `tests/unit/contrast.test.ts` to clear 7:1, and the focus ring
+   clears the 3:1 non-text minimum. Token values must stay in sync with the
+   `HIGH_CONTRAST_*` constants in `src/lib/contrast.ts`. */
+.high-contrast,
+[data-contrast="high"] {
+  color-scheme: dark;
+  background-color: #000000;
+
   --background: #000000;
   --foreground: #ffffff;
   --surface: #000000;
@@ -57,13 +80,10 @@
   color: #ffffff;
 }
 
-.high-contrast a,
-.high-contrast button,
-.high-contrast input,
-.high-contrast select,
-.high-contrast textarea,
-.high-contrast [tabindex]:not([tabindex="-1"]) {
-  border-color: #ffffff;
+/* Thick, high-visibility borders so control boundaries are unambiguous. */
+.high-contrast :where(a, button, input, select, textarea, summary, [tabindex]:not([tabindex="-1"])),
+[data-contrast="high"] :where(a, button, input, select, textarea, summary, [tabindex]:not([tabindex="-1"])) {
+  border-color: var(--border);
 }
 
 /* A shared ring for keyboard focus. `:focus-visible` keeps pointer clicks quiet;
@@ -105,6 +125,19 @@
   --color-muted: var(--muted);
   --color-control: var(--control);
   --color-control-hover: var(--control-hover);
+  --color-contrast-focus: var(--contrast-focus);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-status-success: var(--status-success);
+  --color-status-warning: var(--status-warning);
+  --color-status-danger: var(--status-danger);
+  --color-status-info: var(--status-info);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-sans);
   --color-neon-green: #39ff14;

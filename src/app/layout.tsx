@@ -67,11 +67,15 @@ export default async function RootLayout({
          * The correct "dark" or "light" class is applied to <html> before the
          * first paint, eliminating any theme flash on hard-reload or cold start.
          *
+         * It also restores the stored high-contrast (WCAG AAA) preference —
+         * again falling back to the OS `prefers-contrast: more` signal — so the
+         * boosted palette is on <html> before paint and never flashes.
+         *
          * Must be a plain <script> tag (not next/script) so it blocks parsing.
          */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var s=localStorage.getItem('stellarflow-theme');var d=s==='dark'||(!s&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d);document.documentElement.classList.toggle('light',!d);}catch(e){}})();`,
+            __html: `(function(){try{var r=document.documentElement;var s=localStorage.getItem('stellarflow-theme');var d=s==='dark'||(!s&&window.matchMedia('(prefers-color-scheme: dark)').matches);r.classList.toggle('dark',d);r.classList.toggle('light',!d);var c=localStorage.getItem('stellarflow-high-contrast');var h=c===null?window.matchMedia('(prefers-contrast: more)').matches:c==='true';r.classList.toggle('high-contrast',h);r.dataset.contrast=h?'high':'normal';}catch(e){}})();`,
           }}
         />
         {/* Fallback background colour while the script above runs. */}
