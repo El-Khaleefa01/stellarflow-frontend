@@ -1,11 +1,12 @@
 import type { StorybookConfig } from "@storybook/nextjs";
+import path from "node:path";
 
 const config: StorybookConfig = {
   webpackFinal: async (config) => {
     config.resolve = config.resolve ?? {};
     config.resolve.alias = {
       ...config.resolve.alias,
-      "@": "../src",
+      "@": path.resolve(process.cwd(), "src"),
     };
     return config;
   },
