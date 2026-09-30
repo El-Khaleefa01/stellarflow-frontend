@@ -25,6 +25,7 @@
   --muted: rgba(0, 0, 0, 0.45);
   --control: #ffffff;
   --control-hover: #f5f5f5;
+  --focus-ring-color: #3b82f6;
 }
 
 /* Dark theme — applied by next-themes adding `.dark` to <html> */
@@ -48,6 +49,7 @@
   --surface-raised: #1a1a1a;
   --border: #ffffff;
   --muted: #ffffff;
+  --focus-ring-color: #ffff00;
 }
 
 .high-contrast body {
@@ -64,14 +66,34 @@
   border-color: #ffffff;
 }
 
-/* Keep keyboard focus visible even when a component supplies its own styles. */
-:where(a, button, input, select, textarea, summary, [tabindex]:not([tabindex="-1"])):focus-visible {
-  outline: 3px solid #ffff00;
-  outline-offset: 3px;
-}
-
-.high-contrast :where(a, button, input, select, textarea, summary, [tabindex]:not([tabindex="-1"])):focus-visible {
-  outline-color: #ffff00;
+/* A shared ring for keyboard focus. `:focus-visible` keeps pointer clicks quiet;
+   important is needed because many legacy controls explicitly use focus:outline-none. */
+:where(
+    a[href],
+    area[href],
+    button,
+    input:not([type="hidden"]),
+    select,
+    textarea,
+    summary,
+    [role="button"],
+    [role="link"],
+    [role="checkbox"],
+    [role="radio"],
+    [role="switch"],
+    [role="combobox"],
+    [role="option"],
+    [role="menuitem"],
+    [role="tab"],
+    [role="treeitem"],
+    [role="gridcell"],
+    [role="dialog"],
+    [role="alertdialog"],
+    [contenteditable="true"],
+    [tabindex]:not([tabindex="-1"])
+  ):focus-visible {
+  outline: 2px solid var(--focus-ring-color) !important;
+  outline-offset: 2px !important;
 }
 
 @theme inline {
