@@ -94,7 +94,7 @@ export function usePushNotifications() {
     }
   }, [state.supported]);
   
-  const subscribe = useCallback(async (): Promise<PushSubscription | null> => {
+  const subscribeToPushNotifications = useCallback(async (): Promise<PushSubscription | null> => {
     if (!state.supported || state.permission !== 'granted') {
       return null;
     }
@@ -182,7 +182,7 @@ export function usePushNotifications() {
   return {
     ...state,
     requestPermission,
-    subscribe,
+    subscribe: subscribeToPushNotifications,
     unsubscribe,
     showNotification,
   };

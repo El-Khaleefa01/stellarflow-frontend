@@ -21,7 +21,9 @@ export default async function ProposalHistoryPage({ params }: ProposalHistoryPag
   const { id } = await params;
   
   // Server-side data fetch - no JS bundle cost
-  const votes = await fetchProposalVotes(id);
+  // Static hosting ships only the demo route; do not make the export depend on
+  // the live proposal API being reachable while prerendering that placeholder.
+  const votes = id === "demo" ? [] : await fetchProposalVotes(id);
 
   if (!votes) {
     notFound();

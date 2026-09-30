@@ -9,8 +9,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "node scripts/generate-pwa-icons.js && next build --webpack && node scripts/check-bundle-size.js",
+    "build:export": "node scripts/build-static-export.js",
     "build:analyze": "ANALYZE=true next build",
-    "build:strict": "next build --webpack && node scripts/check-bundle-size.js --strict && node scripts/check-css-size.js --strict",
+    "build:strict": "node scripts/check-sri.js && next build --webpack && node scripts/check-bundle-size.js --strict && node scripts/check-css-size.js --strict",
     "build-storybook": "storybook build",
     "start": "next start",
     "lint": "eslint",
@@ -18,6 +19,8 @@
     "test:e2e": "playwright test",
     "test:visual": "playwright test e2e/visual.spec.ts",
     "test:visual:update": "playwright test e2e/visual.spec.ts --update-snapshots",
+    "check:links": "node scripts/check-broken-links.js",
+    "check:hydration": "node scripts/check-hydration.js",
     "analyze": "cross-env ANALYZE=true npm run build",
     "audit:ci": "npm audit --audit-level=high"
   },
@@ -53,6 +56,7 @@
     "react-dom": "19.2.3",
     "react-icons": "^5.6.0",
     "react-leaflet": "^5.0.0",
+    "recharts": "^3.10.1",
     "ws": "^8.20.0",
     "zod": "^3.25.0"
   },

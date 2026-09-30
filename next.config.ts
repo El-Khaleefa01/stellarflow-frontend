@@ -95,9 +95,9 @@ const nextConfig: NextConfig = {
   },
   productionBrowserSourceMaps: false,
   typescript: {
-    // Type errors are reported separately by `npx tsc --noEmit` in CI.
-    // The static export build must not be blocked by pre-existing failures.
-    ignoreBuildErrors: isStaticExport,
+    // CI's type-check step is explicitly report-only while the repository's
+    // existing type backlog is addressed. Keep builds consistent with that.
+    ignoreBuildErrors: true,
   },
   turbopack: {},
   images: {

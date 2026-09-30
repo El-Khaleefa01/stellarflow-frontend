@@ -1,16 +1,17 @@
 "use client";
 
-import { PriceData, OrderBookSnapshot } from "@/types";
+import { PriceData, OrderBookSnapshot, AmmTradeEvent } from "@/types";
 
 interface SocketMessage {
-  type: "price_update" | "delta_update" | "orderbook_update";
+  type: "price_update" | "delta_update" | "orderbook_update" | "trade_execution";
   assetId?: string;
-  data: PriceData | Partial<PriceData> | OrderBookSnapshot;
+  data: PriceData | Partial<PriceData> | OrderBookSnapshot | AmmTradeEvent;
   timestamp: number;
 }
 
 type MessageCallback = (data: PriceData | Partial<PriceData>) => void;
 type OrderBookCallback = (data: OrderBookSnapshot) => void;
+type TradeCallback = (data: AmmTradeEvent) => void;
 type StatusCallback = (connected: boolean) => void;
 
 export class WebSocketManager {
@@ -20,6 +21,7 @@ export class WebSocketManager {
   // Track listeners for data streams and connection statuses
   private messageListeners: Set<MessageCallback> = new Set();
   private orderBookListeners: Set<OrderBookCallback> = new Set();
+  private tradeListeners: Set<TradeCallback> = new Set();
   private statusListeners: Set<StatusCallback> = new Set();
   
   // Keep an aggregated set of all sub-assets requested by various hooks
@@ -87,6 +89,10 @@ export class WebSocketManager {
             this.orderBookListeners.forEach((callback) =>
               callback(message.data as OrderBookSnapshot),
             );
+          } else if (message.type === "trade_execution") {
+            this.tradeListeners.forEach((callback) =>
+              callback(message.data as AmmTradeEvent),
+            );
           }
         } catch (err) {
           console.error("Failed to parse centralized WebSocket message:", err);
@@ -137,6 +143,15 @@ export class WebSocketManager {
 
   public unsubscribeFromOrderBook(callback: OrderBookCallback) {
     this.orderBookListeners.delete(callback);
+  }
+
+  // Subscribe a component listener to AMM trade execution events
+  public subscribeToTrades(callback: TradeCallback) {
+    this.tradeListeners.add(callback);
+  }
+
+  public unsubscribeFromTrades(callback: TradeCallback) {
+    this.tradeListeners.delete(callback);
   }
 
   // Subscribe a component listener to status change events
