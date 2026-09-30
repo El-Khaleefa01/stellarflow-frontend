@@ -8,6 +8,7 @@ import { exportTransactionsToCsv, type TaxPlatform } from "@/utils/csvExport";
 import { useTransactionHistoryWithFallback } from "@/app/hooks/useTransactionHistory";
 import type { TransactionRecord, TransactionType } from "@/types/transactions";
 import { TransactionHistoryTableSkeleton } from "@/components/skeletons/TransactionHistoryTableSkeleton";
+import { SocialShareModal, type SocialShareData } from "@/components/common";
 
 const TYPE_FILTERS: { label: string; value: "all" | TransactionType }[] = [
   { label: "All Activity", value: "all" },
@@ -83,6 +84,7 @@ export default function TransactionHistoryTable() {
   const { addToast, updateToast } = useToast();
   const [typeFilter, setTypeFilter] = useState<"all" | TransactionType>("all");
   const [isExporting, setIsExporting] = useState(false);
+  const [shareData, setShareData] = useState<SocialShareData | null>(null);
 
   const filteredTransactions = useMemo(
     () =>
@@ -205,9 +207,35 @@ export default function TransactionHistoryTable() {
                   {tx.status}
                 </span>
               </a>
+              {tx.type === "swap" && tx.status === "completed" && (
+                <button
+                  type="button"
+                  onClick={() => setShareData({
+                    type: "trade",
+                    title: `${tx.sentCurrency} to ${tx.receivedCurrency} swap completed`,
+                    fromSymbol: tx.sentCurrency,
+                    fromAmount: tx.sentAmount.toLocaleString(),
+                    toSymbol: tx.receivedCurrency,
+                    toAmount: tx.receivedAmount.toLocaleString(),
+                    timestamp: `${new Date(tx.date).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short", timeZone: "UTC" })} UTC`,
+                    txHash: tx.txHash,
+                  })}
+                  className="mt-1 inline-flex items-center rounded px-2 py-1 font-sans text-xs text-cyan-300 transition-colors hover:bg-cyan-950/60 hover:text-cyan-200"
+                  aria-label={`Share completed ${tx.sentCurrency} to ${tx.receivedCurrency} swap`}
+                >
+                  Share
+                </button>
+              )}
             </div>
           </div>
         ))
+      )}
+      {shareData && (
+        <SocialShareModal
+          isOpen
+          onClose={() => setShareData(null)}
+          shareData={shareData}
+        />
       )}
     </div>
   );
