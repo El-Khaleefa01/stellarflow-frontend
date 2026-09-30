@@ -34,6 +34,7 @@ import {
   type ChartConfiguration,
 } from "chart.js";
 import type { PerAssetBreakdown } from "@/types/portfolio";
+import { BalanceValue } from "@/context/BalancePrivacyContext";
 
 // Register only the elements we need — avoids pulling in the full chart bundle.
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip, Legend);
@@ -245,11 +246,11 @@ export default function AssetBreakdownStackedBar({
           {breakdownByAsset.map((asset) => (
             <tr key={asset.symbol}>
               <th scope="row">{asset.symbol}</th>
-              <td>{formatUsd(asset.breakdown.availableUsd)}</td>
-              <td>{formatUsd(asset.breakdown.limitOrdersUsd)}</td>
-              <td>{formatUsd(asset.breakdown.vaultsUsd)}</td>
-              <td>{formatUsd(asset.breakdown.liquidityPoolsUsd)}</td>
-              <td>{formatUsd(asset.totalUsd)}</td>
+              <td><BalanceValue>{formatUsd(asset.breakdown.availableUsd)}</BalanceValue></td>
+              <td><BalanceValue>{formatUsd(asset.breakdown.limitOrdersUsd)}</BalanceValue></td>
+              <td><BalanceValue>{formatUsd(asset.breakdown.vaultsUsd)}</BalanceValue></td>
+              <td><BalanceValue>{formatUsd(asset.breakdown.liquidityPoolsUsd)}</BalanceValue></td>
+              <td><BalanceValue>{formatUsd(asset.totalUsd)}</BalanceValue></td>
             </tr>
           ))}
         </tbody>

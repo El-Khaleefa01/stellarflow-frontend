@@ -12,6 +12,7 @@ import { BENEFICIARIES_STORAGE_KEY } from '@/lib/beneficiaries';
 import { queryClient } from '@/app/lib/queryClient';
 import { localStoragePersister } from '@/app/lib/persister';
 import { COMMIT_SHA } from '@/config/env';
+import { CspViolationDashboard } from '@/components/security/CspViolationDashboard';
 import packageJson from '../../../package.json';
 
 const SDK_VERSIONS = {
@@ -393,6 +394,11 @@ export default function DiagnosticsDashboard() {
             </div>
           </div>
         </SectionCard>
+
+        {/* Content Security Policy (CSP) Telemetry & Aggregation Section */}
+        <div className="pt-2">
+          <CspViolationDashboard />
+        </div>
 
       </div>
 

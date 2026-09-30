@@ -16,4 +16,9 @@ export {
   type FiatOnRampResult,
   type OnRampProvider,
 } from "../remittance/FiatOnRampModal";
-export * from "./LedgerWalletProvider";
+export {
+  QRScannerModal,
+  type QRScannerModalProps,
+  type ScannedStellarPayment,
+  parseAndValidateStellarQR,
+} from "./QRScannerModal";

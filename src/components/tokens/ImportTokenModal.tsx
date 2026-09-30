@@ -162,7 +162,7 @@ export function ImportTokenModal({
     }
   }, [metadata, riskAcknowledged, onImport]);
 
-  const inputError = touched ? validation.error : null;
+  const inputError = (touched || contractId.length > 0 || assetCode.length > 0 || assetIssuer.length > 0) ? validation.error : null;
   const canFetch = validation.valid && !isFetching;
   const canImport = metadata !== null && riskAcknowledged && !imported;
 

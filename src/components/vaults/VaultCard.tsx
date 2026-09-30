@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react'
 import { createChart, IChartApi, ISeriesApi, Time, AreaData, AreaSeries } from 'lightweight-charts';
 import OptimizedDialog from '@/app/components/OptimizedDialog';
 import { useWallet } from '@/app/components/providers/WalletProvider';
+import { BalanceValue } from '@/context/BalancePrivacyContext';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -365,19 +366,19 @@ export const VaultCard: React.FC<VaultCardProps> = ({ vault, onDeposit, onWithdr
         <div className="rounded-lg bg-gray-800/40 p-4 border border-gray-800">
           <p className="text-xs text-gray-400 mb-1">Total Deposited</p>
           <p className="text-lg font-bold text-white font-mono">
-            ${vault.stats.totalDeposited.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+            <BalanceValue>${vault.stats.totalDeposited.toLocaleString(undefined, { maximumFractionDigits: 2 })}</BalanceValue>
           </p>
         </div>
         <div className="rounded-lg bg-gray-800/40 p-4 border border-gray-800">
           <p className="text-xs text-gray-400 mb-1">Pending Rewards</p>
           <p className="text-lg font-bold text-yellow-400 font-mono">
-            {vault.stats.pendingRewards.toFixed(4)} {vault.asset.symbol}
+            <BalanceValue>{vault.stats.pendingRewards.toFixed(4)} {vault.asset.symbol}</BalanceValue>
           </p>
         </div>
         <div className="rounded-lg bg-gray-800/40 p-4 border border-gray-800">
           <p className="text-xs text-gray-400 mb-1">Your sfvToken Balance</p>
           <p className="text-lg font-bold text-white font-mono">
-            {parseFloat(vault.stats.userSfvTokenBalance).toFixed(6)}
+            <BalanceValue>{parseFloat(vault.stats.userSfvTokenBalance).toFixed(6)}</BalanceValue>
           </p>
         </div>
         <div className="rounded-lg bg-gray-800/40 p-4 border border-gray-800">
@@ -393,7 +394,7 @@ export const VaultCard: React.FC<VaultCardProps> = ({ vault, onDeposit, onWithdr
           <div className="grid grid-cols-2 gap-4">
             <div>
               <p className="text-xs text-gray-400">Deposited Balance</p>
-              <p className="text-white font-mono">{vault.stats.userDepositBalance} {vault.asset.symbol}</p>
+              <p className="text-white font-mono"><BalanceValue>{vault.stats.userDepositBalance} {vault.asset.symbol}</BalanceValue></p>
             </div>
             <div>
               <p className="text-xs text-gray-400">sfvToken Exchange Rate</p>
